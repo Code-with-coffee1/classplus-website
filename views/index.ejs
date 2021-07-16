@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <title>Class Plus</title>
+  <link rel="stylesheet" href="assets/css/landing-page.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+  <link rel="stylesheet" href="assets/css/profile-card.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://kit.fontawesome.com/4e9a685ceb.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
+
+  <!-- Required Fremwork -->
+  <link rel="stylesheet" type="text/css" href="bower_components\bootstrap\css\bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=PT+Sans+Narrow&display=swap" rel="stylesheet">
+<body>
+
+  <!-- navbar -->
+  <nav class="navbar">
+    <a class="logo" href="index.html">
+      <!-- <img src="assets/images/logo.webp" type=""> -->
+    </a>
+    <div class="login">
+      <a id="login" href='/admin_login'>
+        ADMIN LOGIN
+      </a>
+      <a id="join" href="/register">
+        JOIN FOR FREE
+      </a>
+    </div>
+  </nav>
+
+  <!-- hero -->
+  <div class="header">
+    <div class="text">
+      <h1>Your Course <br> to Sucess</h1>
+      <p>Build skills with courses, certificates, and <br> degrees online from world-class universities <br> and companies
+      </p>
+      <a href="#">
+        GET STARTED
+      </a>
+    </div>
+    <div >
+      <img style="width: 97%;" src="assets/images/online_edu.jpg"/>
+    </div>
+  </div>
+
+  <!-- sub-header -->
+  <div class="subHeader">
+    <div class="title">
+      <h1>Find flexible, affordable options</h1>
+    </div>
+    <div class="featureWrapper">
+      <div class="feature">
+        <div class="featureImg blue">
+          <i class="fas fa-book-reader" data-aos="zoom-in"></i>
+        </div>
+        <div class="featureText">
+          <h1>100,000 online courses</h1>
+          <h2>Explore a variety of fresh topics</h2>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="featureImg blue">
+          <i class="fas fa-pencil-ruler" data-aos="zoom-in"></i>
+        </div>
+        <div class="featureText">
+          <h1>Expert instruction</h1>
+          <h2>Find the right instructor for you</h2>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="featureImg blue">
+          <i class="fas fa-calendar" data-aos="zoom-in"></i>
+        </div>
+        <div class="featureText">
+          <h1>Lifetime access</h1>
+          <h2>Learn on your schedule</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popular Subjects -->
+  <div class="subjectsWrapper">
+    <div class="subjectTitle">Popular Subjects</div>
+    <div class="subjectCardWrapper">
+      <div class="subjectCard">
+        <div class="subjectImg">
+          <i class="fas fa-laptop" data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000"></i>
+        </div>
+        <div class="subjectText">
+          Computer <br> Science
+        </div>
+      </div>
+      <div class="subjectCard">
+        <div class="subjectImg">
+          <i class="fas fa-briefcase" data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000"></i>
+        </div>
+        <div class="subjectText">
+          Business & <br> Management
+        </div>
+      </div>
+      <div class="subjectCard">
+        <div class="subjectImg">
+          <i class="fas fa-dna" data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000"></i>
+        </div>
+        <div class="subjectText">
+          Biology & <br> Life Sciences
+        </div>
+      </div>
+      <div class="subjectCard">
+        <div class="subjectImg">
+          <i class="fas fa-seedling" data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000"></i>
+        </div>
+        <div class="subjectText">
+          Environmental <br> Science
+        </div>
+      </div>
+      <div class="subjectCard">
+        <div class="subjectImg">
+          <i class="far fa-chart-bar" data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000"></i>
+        </div>
+        <div class="subjectText">
+          Data Analysis <br> & Statistics
+        </div>
+      </div>
+      <div class="subjectCard">
+        <div class="subjectImg">
+          <i class="fas fa-pizza-slice" data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000"></i>
+        </div>
+        <div class="subjectText">
+          Food & <br> Nutrition
+        </div>
+      </div>
+      <div class="subjectCard">
+        <div class="subjectImg">
+          <i class="far fa-comments" data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="1000"></i>
+        </div>
+        <div class="subjectText">
+          Social <br> Sciences
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Free tests -->
+  <div class="testWrapper">
+    <div class="testTitle">
+      <h1>Take the free mock test now !!</h1>
+    </div>
+    <div class="testCardWrapper">
+      <div class="testCard">
+        <div class="testImg" id="historyImg" data-aos="fade-up" data-aos-duration="1000">
+          <!-- <img src="assets/images/history.svg" alt=""> -->
+        </div>
+        <div class="testText">
+          <h1>History</h1>
+          <a href="#">START</a>
+        </div>
+      </div>
+      <div class="testCard">
+        <div class="testImg" id="polityImg" data-aos="fade-down" data-aos-duration="1000">
+          <!-- <img src="assets/images/polity.svg" alt=""> -->
+        </div>
+        <div class="testText">
+          <h1>Polity</h1>
+          <a href="#">START</a>
+        </div>
+      </div>
+      <div class="testCard">
+        <div class="testImg" id="geographyImg" data-aos="fade-up" data-aos-duration="1000">
+          <!-- <img src="assets/images/geography.svg" alt=""> -->
+        </div>
+        <div class="testText">
+          <h1>History</h1>
+          <a href="#">START</a>
+        </div>
+      </div>
+      <div class="testCard">
+        <div class="testImg" id="science" data-aos="fade-down" data-aos-duration="1000">
+          <!-- <img src="assets/images/sceince.svg" alt=""> -->
+        </div>
+        <div class="testText">
+          <h1>History</h1>
+          <a href="#">START</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="joinWrapper">
+    <div class="joinImg" data-aos="fade-right" data-aos-duration="1000">
+      <!-- <img src="assets/images/ai.svg" alt=""> -->
+    </div>
+    <div class="joinText" data-aos="fade-left" data-aos-duration="1000">
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iure error soluta facere perferendis eveniet illum unde aperiam inventore non tempora ipsum dolorem iste.</p>
+      <a href="#"><i class="fas fa-chevron-right"></i> JOIN FOR FREE</a>
+    </div>
+  </div>
+
+  <div class="container mb-5 row card-row ">
+    <!-- <div class=""> -->
+      <div class="col-lg-4 col-md-6 col-sm-6 prof-card">
+        <!-- <img class="card-img" src="assets/images/office-boy1.jpg" alt="Card image"> -->
+        <div class="card p-3 text-center bg-primary text-white prof-card-body">
+          <h2 class="name-info">Matt McReynolds</h2>
+          <h2 class="name-position">Creative Head</h2>
+          <p class="prof-info">Adipiscing elit, sed do eiusmod tempor incididunt ut labore</p>
+          <div class="social-icons">
+            <i class="fa fa-facebook"></i>
+            <i class="fa fa-twitter"></i>
+            <i class="fa fa-google"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6 col-sm-6 prof-card">
+        <!-- <img class="card-img" src="assets/images/office-boy1.jpg" alt="Card image"> -->
+        <div class="card p-3 text-center bg-primary text-white prof-card-body">
+          <h2 class="name-info">Matt McReynolds</h2>
+          <h2 class="name-position">Creative Head</h2>
+          <p class="prof-info">Adipiscing elit, sed do eiusmod tempor incididunt ut labore</p>
+          <div class="social-icons">
+            <i class="fa fa-facebook"></i>
+            <i class="fa fa-twitter"></i>
+            <i class="fa fa-google"></i>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6 col-sm-6 prof-card">
+        <!-- <img class="card-img" src="assets/images/office-boy1.jpg" alt="Card image"> -->
+        <div class="card p-3 text-center bg-primary text-white prof-card-body">
+          <h2 class="name-info">Matt McReynolds</h2>
+          <h2 class="name-position">Creative Head</h2>
+          <p class="prof-info">Adipiscing elit, sed do eiusmod tempor incididunt ut labore</p>
+          <div class="social-icons">
+            <i class="fa fa-facebook"></i>
+            <i class="fa fa-twitter"></i>
+            <i class="fa fa-google"></i>
+          </div>
+        </div>
+      <!-- </div> -->
+
+    </div>
+  </div>
+
+
+
+
+  
+
+  <!-- <script src="assets/js/landing-page.js"></script> -->
+
+  <div class="footer">
+    <footer>
+      <div class="contact">
+        <h6>contact us</h6>
+        <p>phone number</p>
+        <p>email address</p>
+      
+        <div class="details">
+          <div>
+            
+            
+          </div> 
+          <div> 
+           
+          </div>
+          <div>
+           
+          </div> 
+          <div>
+          
+          </div> 
+        </div>  
+      </div>
+      
+      
+       
+        <div class="information">
+         
+         <p> About us</p>
+        </div>
+      
+        <div class="account">
+        
+        </div>
+        <div class="newsletter">
+         
+        <p>enter your email address below <br>
+       </p>    
+        <input type="email" name="email" placeholder="user@example.com">
+        <button>Subscribe</button>
+        <p>follow us on social networks</p>
+        <a href=""><i class="fab fa-facebook-f"></i></a>
+        <a href=""><i class="fab fa-twitter"></i></a>
+        <a href=""><i class="fab fa-youtube"></i></a>
+        <a href=""><i class="fab fa-instagram"></i></a>
+        <a href=""><i class="fas fa-rss"></i></a>
+      </div>
+    </footer>
+   <!-- <div class="footer-2">
+      <p>Powered by <span>Tech</span>-Designed by <span>Someone</span></p>
+      <div class="icons">
+        <a href=""><i class="fab fa-cc-paypal" style="font-size:20px;"></i></a>
+        <a href=""><i class="fab fa-cc-visa" style="font-size:20px;"></i></a>
+        <a href=""><i class="fab fa-cc-amex" style="font-size:20px;"></i></a>
+        <a href=""><i class="fab fa-cc-mastercard" style="font-size:20px;"></i></a>
+        <a href=""><i class="fab fa-cc-mastercard" style="font-size:20px;"></i></a>
+      </div>  
+    </div>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/js/all.min.js"></script>
+  </div> 
+</body>
+
+</html>
