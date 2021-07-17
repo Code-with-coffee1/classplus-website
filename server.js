@@ -56,6 +56,8 @@ app.use(function (req, res, next) {
   next();
 });
 cors;
+const serverRoot = "http://localhost:" + (process.env.PORT || 3000);
+
 app.set("view engine", "ejs");
 app.get("/register", function (req, res) {
   res.render("register", { qs: req.query, msg: "ok" });
@@ -63,7 +65,7 @@ app.get("/register", function (req, res) {
 app.post("/register", function (req, res) {
   if (req.body && req.body.name) {
     axios
-      .post("/api/signup", req.body)
+      .post(serverRoot+"/api/signup", req.body)
       .then(function (response) {
         res.render("login", { qs: req.query, msg: "ok" });
       })
@@ -72,7 +74,6 @@ app.post("/register", function (req, res) {
       });
   }
 });
-const serverRoot = "http://localhost:" + (process.env.PORT || 3000);
 
 app.get("/login", function (req, res) {
   res.render("login", { msg: "ok" });
