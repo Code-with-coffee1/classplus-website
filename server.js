@@ -90,7 +90,7 @@ app.post("/login", function (req, res) {
       .then(function (response) {
           console.log(response);
         if (response.data.status) {
-          if (response.data.user.username === "profile-admin_account@gmail.com" && response.data.user._id === "604b95fb751d7450b86a0650") {
+          if (response.data.user.username === "profile-admin_account@gmail.com" && response.data.user._id === "60f473496c6027b34b96e30a") {
             username = response.data.user.name;
             id = response.data.user._id;
             axios
@@ -140,7 +140,7 @@ app.post("/admin_login", function (req, res) {
       .post(serverRoot + "/api/signin", req.body)
       .then(function (response) {
         
-        if (response.data.user.username === "profile-admin_account@gmail.com" && response.data.user._id === "604b95fb751d7450b86a0650" && req.body.email === "admin_account@gmail.com" && req.body.password === "!@#Admin2020") {
+        if (response.data.user.username === "profile-admin_account@gmail.com" && response.data.user._id === "60f473496c6027b34b96e30a" && req.body.email === "admin_account@gmail.com" && req.body.password === "!@#Admin2020") {
           username = response.data.user.name;
           axios
             .get(serverRoot + "/api/branches")
