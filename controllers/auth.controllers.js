@@ -4,6 +4,7 @@ const User = require('../models/user.models');
 const jwt = require('jsonwebtoken');
 const expressJwt =require('express-jwt');
 const { errorHandler } = require('../helpers/dbErrorHandler');
+const axios = require('axios');
 
 var fs = require('fs');
 var tj = require('templatesjs');
@@ -109,7 +110,6 @@ exports.signin = (req, res) => {
             // generate a token and send to client
             const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
     
-            res.cookie('token', token, { expiresIn: '1d' });
             const { _id, username, name, email, parentPhoneNo,_class} = user;
             return res.json({
                 status:true,
@@ -119,11 +119,40 @@ exports.signin = (req, res) => {
         });
     };
 
+// exports.signin = async (req, res) => {
+//     const { email, password } = req.body;
+//     // check if user exist
+//     User.findOne({ email }).exec((err, user) => {
+//         if (err || !user) {
+//             return res.status(400).json({
+//                 status:false,
+//                 error: 'User with that email does not exist. Please signup.'
+//             });
+//         }
+//         // authenticate
+//         if (user.password !== password) {
+//             return res.status(400).json({
+//                 status:false,
+//                 error: 'Email and password do not match.'
+//             });
+//         }
+//         // generate a token and send to client
+
+//         const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+//         res.cookie('token', token, { expiresIn: '1d' });
+//         const { _id, username, name, email, parentPhoneNo,_class} = user;
+//         res.cookie("testcookie", "hellow world")
+//         res.redirect('/create_batches');
+//     });
+  
+  
+  
+    
+// };
+
     exports.signout = (req, res) => {
         res.clearCookie('token');
-        res.json({
-            message: 'Signout success'
-        });
+        res.redirect('/login');
     };
 
     exports.requireSignin = expressJwt({

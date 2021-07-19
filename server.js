@@ -14,6 +14,7 @@ const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
 const announcementRoutes = require("./routes/announcement.routes");
 var multer = require("multer");
+const { requireAuth, requireAuthAdmin, checkUser } = require("./middleware/authMiddleware");
 
 const testRoutes = require("./routes/test.routes");
 const study_materialRoutes = require("./routes/study_material.routes");
@@ -24,6 +25,7 @@ var FormData = require("form-data");
 var form = new FormData();
 var fs = require("fs");
 const app = express();
+const jwt = require("jsonwebtoken");
 
 app.set("views", __dirname + "/views");
 app.engine("html", require("ejs").renderFile);
@@ -53,21 +55,25 @@ app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.setHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
 cors;
 const serverRoot = "http://localhost:" + (process.env.PORT || 3000);
 
 app.set("view engine", "ejs");
+
+
 app.get("/register", function (req, res) {
   res.render("register", { qs: req.query, msg: "ok" });
 });
 app.post("/register", function (req, res) {
   if (req.body && req.body.name) {
     axios
-      .post(serverRoot+"/api/signup", req.body)
+      .post(serverRoot + "/api/signup", req.body)
       .then(function (response) {
-        res.render("login", { qs: req.query, msg: "ok" });
+        res.redirect("/login");
       })
       .catch(function (error) {
         console.log(error);
@@ -76,7 +82,34 @@ app.post("/register", function (req, res) {
 });
 
 app.get("/login", function (req, res) {
-  res.render("login", { msg: "ok" });
+  if (req.cookies && req.cookies.token) {
+    const token = req.cookies.token;
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+      if (err) {
+        res.locals.user = null;
+        res.render("login", { msg: "Session Expired" });
+      } else {
+        res.redirect("/student_dashboard");
+      }
+    });
+  } else {
+    res.render("login", {msg: "ok"});
+  }
+});
+app.get("/admin_login", function (req, res) {
+  if (req.cookies && req.cookies.token) {
+    const token = req.cookies.token;
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+      if (err) {
+        res.locals.user = null;
+        res.render("admin_login", { msg: "Session Expired" });
+      } else {
+        res.redirect("/create_batches");
+      }
+    });
+  } else {
+    res.render("admin_login")
+  }
 });
 var username;
 var LocalStorage = require("node-localstorage").LocalStorage;
@@ -88,8 +121,10 @@ app.post("/login", function (req, res) {
     axios
       .post(serverRoot + "/api/signin", req.body)
       .then(function (response) {
-          console.log(response);
+        console.log(response);
         if (response.data.status) {
+        res.cookie("token", response.data.token, { expiresIn: "1d" });
+
           if (response.data.user.username === "profile-admin_account@gmail.com" && response.data.user._id === "60f473496c6027b34b96e30a") {
             username = response.data.user.name;
             id = response.data.user._id;
@@ -110,15 +145,7 @@ app.post("/login", function (req, res) {
             localStorage.setItem("name", response.data.user.name); //if you are sending token.
             //localStorage.setItem('class', response.data.user._class)//if you are sending token.
             //localStorage.setItem('parentPhoneNo', response.data.user.parentPhoneNo)//if you are sending token.
-
-            axios
-              .get(serverRoot + "/api/announcement/getAnnouncementsForAStudentFromAllBranches/" + localStorage.getItem("userId"))
-              .then(function (response1) {
-                if (response1.data.announcementData) res.render("student_dashboard", { user_id: localStorage.getItem("userId"), announcement: response1.data.announcementData, username: localStorage.getItem("name") });
-              })
-              .catch(function (error2) {
-                console.log(error2);
-              });
+            res.redirect("/student_dashboard");
           }
         } else {
           res.render("login", { msg: response.data.error });
@@ -130,27 +157,16 @@ app.post("/login", function (req, res) {
   }
 });
 
-app.get("/admin_login", function (req, res) {
-  res.render("admin_login", { qs: req.query });
-});
+
 
 app.post("/admin_login", function (req, res) {
   if (req.body && req.body.email && req.body.password) {
     axios
-      .post(serverRoot + "/api/signin", req.body)
+      .post(serverRoot + "/api/signin", req.body, { withCredentials: true })
       .then(function (response) {
-        
-        if (response.data.user.username === "profile-admin_account@gmail.com" && response.data.user._id === "60f473496c6027b34b96e30a" && req.body.email === "admin_account@gmail.com" && req.body.password === "!@#Admin2020") {
-          username = response.data.user.name;
-          axios
-            .get(serverRoot + "/api/branches")
-            .then(function (response) {
-              res.render("create_batches", { branchData: response.data.userData });
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }
+        res.cookie("token", response.data.token, { expiresIn: "1d" });
+        username = response.data.user.name;
+        res.redirect("/create_batches");
       })
       .catch(function (error) {
         console.log(error);
@@ -158,12 +174,31 @@ app.post("/admin_login", function (req, res) {
   }
 });
 
-// app.post('/api/signin', (req, res)=>{
-//     res.send(req.body)
-//     // console.log(req.body);
+app.get("/create_batches", requireAuthAdmin, function (req, res) {
+  axios
+    .get(serverRoot + "/api/branches", { withCredentials: true })
+    .then(function (response) {
+      res.render("create_batches", { branchData: response.data.userData });
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+});
 
-// })
-
+app.get("/student_dashboard", requireAuth, function (req, res) {
+  if (!localStorage.getItem("userId")) {
+    res.redirect("/api/signout");
+  } else {
+    axios
+      .get(serverRoot + "/api/announcement/getAnnouncementsForAStudentFromAllBranches/" + localStorage.getItem("userId"))
+      .then(function (response1) {
+        if (response1.data.announcementData) res.render("student_dashboard", { user_id: localStorage.getItem("userId"), announcement: response1.data.announcementData, username: localStorage.getItem("name") });
+      })
+      .catch(function (error2) {
+        console.log(error2);
+      });
+  }
+});
 app.get("/announcements", function (req, res) {
   axios
     .get(serverRoot + "/api/announcement/getAnnouncementsByBranchIdForStudent/" + localStorage.getItem("batchID"))
@@ -1255,7 +1290,7 @@ app.use("/", (req, res) => {
   res.render("index", { qs: req.query });
 });
 
-const port = (process.env.PORT || 3000);
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server connected on port ${port}`);
 });
