@@ -64,7 +64,6 @@ const serverRoot = "http://localhost:" + (process.env.PORT || 3000);
 
 app.set("view engine", "ejs");
 
-
 app.get("/register", function (req, res) {
   res.render("register", { qs: req.query, msg: "ok" });
 });
@@ -93,7 +92,7 @@ app.get("/login", function (req, res) {
       }
     });
   } else {
-    res.render("login", {msg: "ok"});
+    res.render("login", { msg: "ok" });
   }
 });
 app.get("/admin_login", function (req, res) {
@@ -108,7 +107,7 @@ app.get("/admin_login", function (req, res) {
       }
     });
   } else {
-    res.render("admin_login")
+    res.render("admin_login");
   }
 });
 var username;
@@ -123,7 +122,7 @@ app.post("/login", function (req, res) {
       .then(function (response) {
         console.log(response);
         if (response.data.status) {
-        res.cookie("token", response.data.token, { expiresIn: "1d" });
+          res.cookie("token", response.data.token, { expiresIn: "1d" });
 
           if (response.data.user.username === "profile-admin_account@gmail.com" && response.data.user._id === "60f473496c6027b34b96e30a") {
             username = response.data.user.name;
@@ -156,8 +155,6 @@ app.post("/login", function (req, res) {
       });
   }
 });
-
-
 
 app.post("/admin_login", function (req, res) {
   if (req.body && req.body.email && req.body.password) {
