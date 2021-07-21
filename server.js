@@ -140,19 +140,6 @@ app.post("/login", function (req, res) {
         console.log(response);
         if (response.data.status) {
           res.cookie("token", response.data.token, { expiresIn: "1d" });
-
-          if (response.data.user.username === "profile-admin_account@gmail.com" && response.data.user._id === "60f473496c6027b34b96e30a") {
-            username = response.data.user.name;
-            id = response.data.user._id;
-            axios
-              .get(serverRoot + "/api/branches")
-              .then(function (response) {
-                res.render("create_batches", { branchData: response.data.userData });
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-          } else {
             //res.render('student_dashboard',{ username : response.data.user.name })
             localStorage.setItem("userToken", response.data.token); //if you are sending token.
             localStorage.setItem("userId", response.data.user._id); //if you are sending token.
@@ -162,7 +149,6 @@ app.post("/login", function (req, res) {
             //localStorage.setItem('class', response.data.user._class)//if you are sending token.
             //localStorage.setItem('parentPhoneNo', response.data.user.parentPhoneNo)//if you are sending token.
             res.redirect("/student_dashboard");
-          }
         } else {
           res.render("login", { msg: response.data.error });
         }
