@@ -79,6 +79,18 @@ app.post("/register", function (req, res) {
       });
   }
 });
+app.post("/register_admin", function (req, res) {
+  if (req.body && req.body.name) {
+    axios
+      .post(serverRoot + "/api/signupAdmin", req.body)
+      .then(function (response) {
+        res.redirect("/admin_login");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+});
 
 app.get("/login", function (req, res) {
   if (req.cookies && req.cookies.token) {
@@ -110,6 +122,11 @@ app.get("/admin_login", function (req, res) {
     res.render("admin_login");
   }
 });
+app.get("/register_admin", function (req, res) {
+  res.render("register_admin");
+})
+
+
 var username;
 var LocalStorage = require("node-localstorage").LocalStorage;
 const { test } = require("./controllers/branch.controllers");
@@ -159,7 +176,7 @@ app.post("/login", function (req, res) {
 app.post("/admin_login", function (req, res) {
   if (req.body && req.body.email && req.body.password) {
     axios
-      .post(serverRoot + "/api/signin", req.body, { withCredentials: true })
+      .post(serverRoot + "/api/signinAdmin", req.body, { withCredentials: true })
       .then(function (response) {
         res.cookie("token", response.data.token, { expiresIn: "1d" });
         username = response.data.user.name;
