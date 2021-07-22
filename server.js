@@ -119,7 +119,7 @@ app.get("/admin_login", function (req, res) {
       }
     });
   } else {
-    res.render("admin_login", {msg:""});
+    res.render("admin_login", {msg:"ok"});
   }
 });
 app.get("/register_admin", function (req, res) {
