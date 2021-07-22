@@ -119,7 +119,7 @@ app.get("/admin_login", function (req, res) {
       }
     });
   } else {
-    res.render("admin_login");
+    res.render("admin_login", {msg:""});
   }
 });
 app.get("/register_admin", function (req, res) {
@@ -170,6 +170,7 @@ app.post("/admin_login", function (req, res) {
       })
       .catch(function (error) {
         console.log(error);
+        res.render("admin_login", {msg:"invalid"});
       });
   }
 });
