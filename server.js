@@ -16,7 +16,7 @@ const announcementRoutes = require("./routes/announcement.routes");
 var multer = require("multer");
 const { requireAuth, requireAuthAdmin, checkUser } = require("./middleware/authMiddleware");
 
-const testRoutes = require("./routes/test.routes");
+const testRoutes = require("./routes/test.routes"); 
 const study_materialRoutes = require("./routes/study_material.routes");
 const questionRoutes = require("./routes/question.routes");
 const videoRoutes = require("./routes/video.routes");
