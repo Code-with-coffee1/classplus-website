@@ -1,10 +1,12 @@
 const User = require("../models/user.models");
 const Branch = require("../models/branch.models");
+const Admin = require("../models/admin.models");
 const new_branch = require("../models/new_branch.models");
 const formidable = require("formidable");
 const fs = require("fs");
 const { errorHandler } = require("../helpers/dbErrorHandler");
 var nodemailer = require('nodemailer');
+
 
 var transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -33,9 +35,8 @@ exports.sendEmail = (req, res) => {
 
 
 exports.create = (req, res) => {
-  const { title, code, start_date, _class,students } = req.body;
-
-  const branch = new new_branch({ title, code, start_date, _class,students });
+  const { postedBy, title, code, start_date, _class,students } = req.body;
+  const branch = new new_branch({postedBy, title, code, start_date, _class,students });
   branch.save((err, user) => {
       if (err) {
           return res.status(401).json({
@@ -47,11 +48,13 @@ exports.create = (req, res) => {
           message: 'Branch created successfully.!!',
           userData:user
       });
-  }); 
+  });
+  
 }
 
 exports.list = (req, res) => {
-  new_branch.find().sort({createdAt: 'desc'}).find(function(err, user) {
+    console.log(req.query.admin)
+  new_branch.find({postedBy:req.query.admin}).sort({createdAt: 'desc'}).find(function(err, user) {
       if (err) {
           return res.status(401).json({
               error: errorHandler(err)

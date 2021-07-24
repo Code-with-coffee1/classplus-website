@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 const Education = require("./education_details.models").schema;
 const Address = require("./address.models").schema;
+const Batches = require("./new_branch.models").schema;
 
 const adminSchema = new mongoose.Schema(
   {
@@ -48,8 +49,8 @@ const adminSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    educationDetails:[Education],
-    address:[Address],
+    educationDetails: [Education],
+    address: [Address],
     isActive: {
       type: Boolean,
       trim: true,

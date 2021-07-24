@@ -176,14 +176,17 @@ app.post("/admin_login", function (req, res) {
 });
 
 app.get("/create_batches", requireAuthAdmin, function (req, res) {
-  axios
-    .get(serverRoot + "/api/branches", { withCredentials: true })
+  jwt.verify(req.cookies.token, process.env.JWT_SECRET, async (err, decodedToken) => {
+    axios
+    .get(serverRoot + "/api/branches", {params : {admin:decodedToken._id}} )
     .then(function (response) {
       res.render("create_batches", { branchData: response.data.userData });
     })
     .catch(function (error) {
       console.log(error);
     });
+  })
+  
 });
 
 app.get("/student_dashboard", requireAuth, function (req, res) {
@@ -362,35 +365,25 @@ app.get("/create_batches", function (req, res) {
 });
 app.post("/create_batches", function (req, res) {
   if (req.body) {
-    var obj = {
-      title: req.body.BatchName,
-      code: req.body.BatchCode,
-      start_date: req.body.date,
-      _class: req.body.class,
-    };
-    axios
-      .post(serverRoot + "/api/branch/create", obj)
-      .then(function (response) {
-        axios
-          .get(serverRoot + "/api/branches")
-          .then(function (response) {
-            axios
-              .get(serverRoot + "/api/branches")
-              .then(function (response) {
-                res.render("create_batches", { branchData: response.data.userData });
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-        // res.render('create_batches',{ username : username })
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    const token = req.cookies.token;
+    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+      var obj = {
+        postedBy: decodedToken._id,
+        title: req.body.BatchName,
+        code: req.body.BatchCode,
+        start_date: req.body.date,
+        _class: req.body.class,
+      };
+      axios
+        .post(serverRoot + "/api/branch/create", obj)
+        .then(function (response) {
+          res.redirect("/create_batches")
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    });
+  
   }
 });
 
