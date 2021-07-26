@@ -15,7 +15,7 @@ const userRoutes = require("./routes/user.routes");
 const announcementRoutes = require("./routes/announcement.routes");
 var multer = require("multer");
 const { requireAuth, requireAuthAdmin, checkUser } = require("./middleware/authMiddleware");
-
+const cloudinary = require("cloudinary");
 const testRoutes = require("./routes/test.routes"); 
 const study_materialRoutes = require("./routes/study_material.routes");
 const questionRoutes = require("./routes/question.routes");
@@ -30,6 +30,11 @@ const jwt = require("jsonwebtoken");
 app.set("views", __dirname + "/views");
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
+cloudinary.config({ 
+  cloud_name: 'husain3012', 
+  api_key: '194382484881344', 
+  api_secret: 'ookjZIV8LP5v2ZuhskgZYhU-84k' 
+});
 
 // view engine setup
 // app.engine('handlebars',exphbs({ extname: "hbs", defaultLayout: false, layoutsDir: "views/ "}));
@@ -108,9 +113,9 @@ app.get("/login", function (req, res) {
   }
 });
 app.get("/admin_login", function (req, res) {
-  if (req.cookies && req.cookies.token) {
-    const token = req.cookies.token;
-    jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+  if (req.cookies && req.cookies.tokenAdmin) {
+    const tokenAdmin = req.cookies.tokenAdmin;
+    jwt.verify(tokenAdmin, process.env.JWT_SECRET, async (err, decodedToken) => {
       if (err) {
         res.locals.user = null;
         res.render("admin_login", { msg: "Session Expired" });
@@ -164,7 +169,7 @@ app.post("/admin_login", function (req, res) {
     axios
       .post(serverRoot + "/api/signinAdmin", req.body, { withCredentials: true })
       .then(function (response) {
-        res.cookie("token", response.data.token, { expiresIn: "1d" });
+        res.cookie("tokenAdmin", response.data.tokenAdmin, { expiresIn: "1d" });
         username = response.data.user.name;
         res.redirect("/create_batches");
       })
@@ -176,7 +181,7 @@ app.post("/admin_login", function (req, res) {
 });
 
 app.get("/create_batches", requireAuthAdmin, function (req, res) {
-  jwt.verify(req.cookies.token, process.env.JWT_SECRET, async (err, decodedToken) => {
+  jwt.verify(req.cookies.tokenAdmin, process.env.JWT_SECRET, async (err, decodedToken) => {
     axios
     .get(serverRoot + "/api/branches", {params : {admin:decodedToken._id}} )
     .then(function (response) {
@@ -456,9 +461,10 @@ app.get("/students", function (req, res) {
 app.get("/student_details", function (req, res) {
   let id = req.query.id;
   axios
-    .get(serverRoot + "/api/getStudentsById/" + req.query.id)
+    .get(serverRoot + "/api/getStudentsById/" + id)
     .then(function (response) {
       let x = response.data.userData[0].name.charAt(0);
+      console.log(response.data.userData)
       res.render("student_details", { userData: response.data.userData, name: x });
     })
     .catch(function (error) {
@@ -1133,6 +1139,41 @@ app.post("/admin_assignment", function (req, res) {
     });
   }
 });
+app.post("/modify_student", function (req, res) {
+ 
+  const _id = req.body.studentId;
+  const attachment = req.files.parentPhoto1 || req.files.parentPhoto2;
+  const base64data = Buffer.from(attachment.data).toString('base64');
+  if(req.files){
+    cloudinary.v2.uploader.upload("data:image/png;base64,"+base64data,
+  { 
+    overwrite: true,
+    invalidate: true, resource_type: "auto" }, 
+  function(error, result){
+    if(error){
+      console.log(error);
+    }else{
+      // console.log(result);
+      if(req.files.parentPhoto1){
+        req.body.parentPhoto1=result.secure_url;
+      }else{
+        req.body.parentPhoto2=result.secure_url;
+      }
+      axios.post(serverRoot + "/api/modifyStudent/",req.body)
+      .then(function (response) {
+        res.redirect("/student_details/?id="+_id);
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+    }
+  });
+  }
+
+
+ 
+ 
+})
 
 app.get("/getpdf", function (req, res) {
   console.log("**********888", req.query);

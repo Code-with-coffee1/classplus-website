@@ -2,14 +2,14 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user.models');
 
 const requireAuthAdmin = (req, res, next) => {
-  const token = req.cookies.token;
+  const tokenAdmin = req.cookies.tokenAdmin;
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
   res.setHeader("Pragma", "no-cache"); // HTTP 1.0.
   res.setHeader("Expires", "0");
 
   // check json web token exists & is verified
-  if (token) {
-    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+  if (tokenAdmin) {
+    jwt.verify(tokenAdmin, process.env.JWT_SECRET, (err, decodedToken) => {
       if (err) {
         console.log(err.message);
         res.redirect('/admin_login');

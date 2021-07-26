@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 const Education = require("./education_details.models").schema;
 const Address = require("./address.models").schema;
-const Batches = require("./new_branch.models").schema;
 
 const adminSchema = new mongoose.Schema(
   {

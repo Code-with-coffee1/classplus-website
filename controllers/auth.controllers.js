@@ -64,24 +64,24 @@ exports.signupAdmin = (req, res) => {
       country,
     },
   };
-  console.log(newUser);
+  // console.log(newUser);
 
-    Admin.create(newUser, function (err, userResult) {
-      if (err) {
-          console.log("some error occured")
-          console.log(err)
-        return res.status(401).json({
-          status: false,
-          error: errorHandler(err),
-        });
-      } else {
-        res.status(200).json({
-          status: true,
-          message: "Signup success! Please signin",
-          userData: userResult,
-        });
-      }
-    });
+  Admin.create(newUser, function (err, userResult) {
+    if (err) {
+      console.log("some error occured");
+      console.log(err);
+      return res.status(401).json({
+        status: false,
+        error: errorHandler(err),
+      });
+    } else {
+      res.status(200).json({
+        status: true,
+        message: "Signup success! Please signin",
+        userData: userResult,
+      });
+    }
+  });
 };
 
 exports.getAllSignups = (req, res) => {
@@ -155,37 +155,62 @@ exports.signin = (req, res) => {
   });
 };
 exports.signinAdmin = (req, res) => {
-    const { email, password } = req.body;
-    // check if user exist
-    Admin.findOne({ email }).exec((err, user) => {
-      if (err || !user) {
-        return res.status(400).json({
-          status: false,
-          error: "User with that email does not exist. Please signup.",
-        });
+  const { email, password } = req.body;
+  // check if user exist
+  Admin.findOne({ email }).exec((err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        status: false,
+        error: "User with that email does not exist. Please signup.",
+      });
+    }
+    // authenticate
+    if (user.password !== password) {
+      return res.status(400).json({
+        status: false,
+        error: "Email and password do not match.",
+      });
+    }
+    // generate a token and send to client
+    const tokenAdmin = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+
+    const { _id, username, name, email, parentPhoneNo, _class } = user;
+    return res.json({
+      status: true,
+      tokenAdmin,
+      user: { _id, username, name, email, parentPhoneNo, _class },
+    });
+  });
+};
+exports.modifyStudent = (req, res) => {
+  console.log(req.body);
+  const _id = req.body.studentId;
+  delete req.body._id;
+  const newdata = req.body;
+  User.findById(_id).exec((err, user) => {
+    if (err) {
+      console.log(err);
+    }
+    user.update(newdata, (err, user) => {
+      if (err) {
+        console.log(err);
       }
-      // authenticate
-      if (user.password !== password) {
-        return res.status(400).json({
-          status: false,
-          error: "Email and password do not match.",
-        });
-      }
-      // generate a token and send to client
-      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-  
-      const { _id, username, name, email, parentPhoneNo, _class } = user;
       return res.json({
         status: true,
-        token,
-        user: { _id, username, name, email, parentPhoneNo, _class },
+        message: "user updated successfully",
+        user: user,
       });
     });
-  };
+  });
+};
 
 exports.signout = (req, res) => {
   res.clearCookie("token");
   res.redirect("/login");
+};
+exports.signoutAdmin = (req, res) => {
+  res.clearCookie("tokenAdmin");
+  res.redirect("/admin_login");
 };
 
 exports.requireSignin = expressJwt({

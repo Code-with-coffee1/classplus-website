@@ -61,6 +61,12 @@ const userSchema = new mongoose.Schema(
             minlength: 10,
             maxlength: 10,
         },
+        parentPhoto1: {
+            type: String,
+        },
+        parentPhoto2: {
+            type: String,
+        },
         testIds: [],
         
     },
