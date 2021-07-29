@@ -16,7 +16,7 @@ const announcementRoutes = require("./routes/announcement.routes");
 var multer = require("multer");
 const { requireAuth, requireAuthAdmin, checkUser } = require("./middleware/authMiddleware");
 const cloudinary = require("cloudinary");
-const testRoutes = require("./routes/test.routes"); 
+const testRoutes = require("./routes/test.routes");
 const study_materialRoutes = require("./routes/study_material.routes");
 const questionRoutes = require("./routes/question.routes");
 const videoRoutes = require("./routes/video.routes");
@@ -30,10 +30,10 @@ const jwt = require("jsonwebtoken");
 app.set("views", __dirname + "/views");
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
-cloudinary.config({ 
-  cloud_name: 'husain3012', 
-  api_key: '194382484881344', 
-  api_secret: 'ookjZIV8LP5v2ZuhskgZYhU-84k' 
+cloudinary.config({
+  cloud_name: "husain3012",
+  api_key: process.env.CLOUDINARY_API,
+  api_secret: process.env.CLOUDINARY_SECRET,
 });
 
 // view engine setup
@@ -124,13 +124,12 @@ app.get("/admin_login", function (req, res) {
       }
     });
   } else {
-    res.render("admin_login", {msg:"ok"});
+    res.render("admin_login", { msg: "ok" });
   }
 });
 app.get("/register_admin", function (req, res) {
   res.render("register_admin");
-})
-
+});
 
 var username;
 var LocalStorage = require("node-localstorage").LocalStorage;
@@ -145,15 +144,15 @@ app.post("/login", function (req, res) {
         console.log(response);
         if (response.data.status) {
           res.cookie("token", response.data.token, { expiresIn: "1d" });
-            //res.render('student_dashboard',{ username : response.data.user.name })
-            localStorage.setItem("userToken", response.data.token); //if you are sending token.
-            localStorage.setItem("userId", response.data.user._id); //if you are sending token.
-            localStorage.setItem("userName", response.data.user.username); //if you are sending token.
-            localStorage.setItem("userEmail", response.data.user.email); //if you are sending token.
-            localStorage.setItem("name", response.data.user.name); //if you are sending token.
-            //localStorage.setItem('class', response.data.user._class)//if you are sending token.
-            //localStorage.setItem('parentPhoneNo', response.data.user.parentPhoneNo)//if you are sending token.
-            res.redirect("/student_dashboard");
+          //res.render('student_dashboard',{ username : response.data.user.name })
+          localStorage.setItem("userToken", response.data.token); //if you are sending token.
+          localStorage.setItem("userId", response.data.user._id); //if you are sending token.
+          localStorage.setItem("userName", response.data.user.username); //if you are sending token.
+          localStorage.setItem("userEmail", response.data.user.email); //if you are sending token.
+          localStorage.setItem("name", response.data.user.name); //if you are sending token.
+          //localStorage.setItem('class', response.data.user._class)//if you are sending token.
+          //localStorage.setItem('parentPhoneNo', response.data.user.parentPhoneNo)//if you are sending token.
+          res.redirect("/student_dashboard");
         } else {
           res.render("login", { msg: response.data.error });
         }
@@ -175,7 +174,7 @@ app.post("/admin_login", function (req, res) {
       })
       .catch(function (error) {
         console.log(error);
-        res.render("admin_login", {msg:"Invalid Email or password"});
+        res.render("admin_login", { msg: "Invalid Email or password" });
       });
   }
 });
@@ -183,15 +182,14 @@ app.post("/admin_login", function (req, res) {
 app.get("/create_batches", requireAuthAdmin, function (req, res) {
   jwt.verify(req.cookies.tokenAdmin, process.env.JWT_SECRET, async (err, decodedToken) => {
     axios
-    .get(serverRoot + "/api/branches", {params : {admin:decodedToken._id}} )
-    .then(function (response) {
-      res.render("create_batches", { branchData: response.data.userData });
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-  })
-  
+      .get(serverRoot + "/api/branches", { params: { admin: decodedToken._id } })
+      .then(function (response) {
+        res.render("create_batches", { branchData: response.data.userData });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  });
 });
 
 app.get("/student_dashboard", requireAuth, function (req, res) {
@@ -370,8 +368,8 @@ app.get("/create_batches", function (req, res) {
 });
 app.post("/create_batches", function (req, res) {
   if (req.body) {
-    const token = req.cookies.token;
-    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+    const tokenAdmin = req.cookies.tokenAdmin;
+    jwt.verify(tokenAdmin, process.env.JWT_SECRET, (err, decodedToken) => {
       var obj = {
         postedBy: decodedToken._id,
         title: req.body.BatchName,
@@ -382,17 +380,37 @@ app.post("/create_batches", function (req, res) {
       axios
         .post(serverRoot + "/api/branch/create", obj)
         .then(function (response) {
-          res.redirect("/create_batches")
+          res.redirect("/create_batches");
         })
         .catch(function (error) {
           console.log(error);
         });
     });
-  
   }
 });
+app.post("/join_new_batch", function (req, res) {
+  if (req.body) {
+    const token = req.cookies.token;
+    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+      const obj = {
+        student_id: decodedToken._id,
+        branch_id: req.body.batch_id,
+      };
 
+      axios
+        .post(serverRoot + "/api/branch/request", obj)
+        .then(function (response) {
+          console.log(response.data);
+          res.redirect("/student_dashboard");
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    });
+  }
+});
 app.get("/add_students", function (req, res) {
+  const branch_id = req.query.id;
   axios
     .get(serverRoot + "/api/branchStudentsByBranchId/" + req.query.id)
     .then(function (response) {
@@ -400,9 +418,10 @@ app.get("/add_students", function (req, res) {
         selectedStudents.push(element._id);
       });
       axios
-        .get(serverRoot + "/api/getAllSignups")
+        .get(serverRoot + "/api/getPendingRequests", { params: { branch_id } })
         .then(function (allSignups) {
-          let data = allSignups.data.userData.filter((item) => !selectedStudents.includes(item._id));
+          console.log(allSignups.data);
+          let data = allSignups.data.users.filter((item) => !selectedStudents.includes(item._id));
           res.render("add_students", { id: req.query.id, userData: data });
           selectedStudents = [];
         })
@@ -415,11 +434,13 @@ app.get("/add_students", function (req, res) {
     });
 });
 app.post("/add_students", function (req, res) {
-  if (!Array.isArray(req.body.vehicle1)) {
-    req.body.vehicle1 = [req.body.vehicle1];
+  if (!Array.isArray(req.body.user)) {
+    req.body.user = [req.body.user];
   }
+  console.log(req.body.user)
+  
   axios
-    .put(serverRoot + "/api/addStudentsToBranch/" + req.query.id, { students: req.body.vehicle1 })
+    .put(serverRoot + "/api/addStudentsToBranch/" + req.query.id, { students: req.body.user })
     .then(function (response) {
       axios
         .get(serverRoot + "/api/branchStudentsByBranchId/" + req.query.id)
@@ -464,7 +485,7 @@ app.get("/student_details", function (req, res) {
     .get(serverRoot + "/api/getStudentsById/" + id)
     .then(function (response) {
       let x = response.data.userData[0].name.charAt(0);
-      console.log(response.data.userData)
+      console.log(response.data.userData);
       res.render("student_details", { userData: response.data.userData, name: x });
     })
     .catch(function (error) {
@@ -1140,40 +1161,40 @@ app.post("/admin_assignment", function (req, res) {
   }
 });
 app.post("/modify_student", function (req, res) {
- 
   const _id = req.body.studentId;
   const attachment = req.files.parentPhoto1 || req.files.parentPhoto2;
-  const base64data = Buffer.from(attachment.data).toString('base64');
-  if(req.files){
-    cloudinary.v2.uploader.upload("data:image/png;base64,"+base64data,
-  { 
-    overwrite: true,
-    invalidate: true, resource_type: "auto" }, 
-  function(error, result){
-    if(error){
-      console.log(error);
-    }else{
-      // console.log(result);
-      if(req.files.parentPhoto1){
-        req.body.parentPhoto1=result.secure_url;
-      }else{
-        req.body.parentPhoto2=result.secure_url;
+  const base64data = Buffer.from(attachment.data).toString("base64");
+  if (req.files) {
+    cloudinary.v2.uploader.upload(
+      "data:image/png;base64," + base64data,
+      {
+        overwrite: true,
+        invalidate: true,
+        resource_type: "auto",
+      },
+      function (error, result) {
+        if (error) {
+          console.log(error);
+        } else {
+          // console.log(result);
+          if (req.files.parentPhoto1) {
+            req.body.parentPhoto1 = result.secure_url;
+          } else {
+            req.body.parentPhoto2 = result.secure_url;
+          }
+          axios
+            .post(serverRoot + "/api/modifyStudent/", req.body)
+            .then(function (response) {
+              res.redirect("/student_details/?id=" + _id);
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
       }
-      axios.post(serverRoot + "/api/modifyStudent/",req.body)
-      .then(function (response) {
-        res.redirect("/student_details/?id="+_id);
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-    }
-  });
+    );
   }
-
-
- 
- 
-})
+});
 
 app.get("/getpdf", function (req, res) {
   console.log("**********888", req.query);

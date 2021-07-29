@@ -25,11 +25,6 @@ const userSchema = new mongoose.Schema(
             unique: true,
             lowercase: true
         },
-       
-        // password:{
-        //     type:String,
-        //     require:true
-        // },
         password: {
             type: String,
             minlength: 8,
@@ -68,6 +63,14 @@ const userSchema = new mongoose.Schema(
             type: String,
         },
         testIds: [],
+        enrolledBatches: [{
+            type: ObjectId,
+             ref: "new_batches",
+        }],
+        requestedBatches:[{
+            type: ObjectId,
+            ref: "new_batches",
+        }],
         
     },
     { timestamps: true }

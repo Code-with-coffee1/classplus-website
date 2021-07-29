@@ -6,6 +6,7 @@ const formidable = require("formidable");
 const fs = require("fs");
 const { errorHandler } = require("../helpers/dbErrorHandler");
 var nodemailer = require('nodemailer');
+const mongoose = require("mongoose");
 
 
 var transporter = nodemailer.createTransport({
@@ -35,20 +36,32 @@ exports.sendEmail = (req, res) => {
 
 
 exports.create = (req, res) => {
-  const { postedBy, title, code, start_date, _class,students } = req.body;
-  const branch = new new_branch({postedBy, title, code, start_date, _class,students });
-  branch.save((err, user) => {
-      if (err) {
-          return res.status(401).json({
-              error: errorHandler(err)
-          });
-      }
-      return res.json({
-          status:true,
-          message: 'Branch created successfully.!!',
-          userData:user
-      });
-  });
+    const admin_id = req.body.postedBy;
+    console.log(admin_id)
+    Admin.findById(admin_id, (err, admin)=>{
+        console.log(admin)
+        if(!err && admin){
+            const {title, code, start_date, _class,students } = req.body;
+            const branch = new new_branch({postedBy: admin, title, code, start_date, _class,students });
+            branch.save((err, user) => {
+                if (err) {
+                    return res.status(401).json({
+                        error: errorHandler(err)
+                    });
+                }else{
+                    return res.json({
+                        status:true,
+                        message: 'Branch created successfully.!!',
+                        userData:user
+                    });
+                }
+                
+            });
+        }
+
+       
+    })
+
   
 }
 
@@ -92,6 +105,7 @@ exports.branchStudentsByBranchId = (req, res) => {
 }
 
 exports.addStudentsToBranch = (req, res) => {
+   const branch_id = mongoose.Types.ObjectId(req.params.id)
     new_branch.find({_id:req.params.id},function(err, branchData) {
         if (err) {
             return res.status(401).json({
@@ -104,15 +118,28 @@ exports.addStudentsToBranch = (req, res) => {
                         error: errorHandler(err)
                     });
                 }
-                return res.json({
-                    message: 'updated successfully',
-                    result:result
-                });
-            });
+                else{
+                    const addedUsers  =  req.body.students.map(id => mongoose.Types.ObjectId(id));
+                    User.updateMany({"_id":{$in: addedUsers}}, {$pull: {requestedBatches: branch_id}, $push: {enrolledBatches: branch_id}}, function(err, updatedUsers){
+                        if(err){
+                            return res.status(401).json({
+                                error: errorHandler(err)
+                            });
+                        }
+                        return res.json({
+                            message: 'updated successfully',
+                            result:result
+                        });
+                    })
+               
+            }
+        });
+                
+              
+
         }
     }); 
 }
-
 exports.removeStudentsFromBranch  = (req, res) => {
     new_branch.find({_id:req.params.id},function(err, branchData) {
         if (err) {
@@ -134,6 +161,53 @@ exports.removeStudentsFromBranch  = (req, res) => {
         }
     });
 }
+exports.branchRequest = (req, res) => {
+    User.findById(req.body.student_id,function(err, user) {
+        if (err) {
+            return res.status(401).json({
+                error: errorHandler(err)
+            });
+        }else{
+            new_branch.findById(req.body.branch_id, function(err, branch){  
+                let message = "";              
+                if(branch && user){
+                    if(!user.requestedBatches.some(item=>item._id.toString()===req.body.branch_id) && !user.enrolledBatches.some(item=>item._id.toString()===req.body.branch_id)){
+                        user.requestedBatches.push(branch);
+                        user.save() 
+                        message = "Branch added successfully";
+                    }else{
+                        message = "Already applied for this branch";
+                    }
+                    return res.json({
+                        message,
+                        user,
+                        branch
+                    });
+                }
+            })
+           
+        }
+    })
+}
+
+exports.getPendingRequests = (req, res) => {
+    console.log(req.query.branch_id)
+
+    User.find({"requestedBatches":mongoose.Types.ObjectId(req.query.branch_id)}, (err, users) => {
+        if (err) {
+          return res.status(401).json({
+            error: errorHandler(err),
+          });
+        }
+        else{
+          return res.json({
+            users,
+          });
+        }
+       
+      });
+   
+  };
 
 exports.getAllBranchesForAStudent  = (req, res) => {
     new_branch.find({ students: { $all: [req.params.studentId] }},function(err, branchData) {

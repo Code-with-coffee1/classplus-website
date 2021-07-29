@@ -392,6 +392,7 @@ body {
                           <input type="checkbox" onClick="toggle(this)"  /> Select All
                           <% for(var person of userData){ %>
                             <div class="row mb-2" id="studentrow">
+                              <input type="checkbox" name="user" value="<%=person._id%>">
                               <label for="vehicle1" class="col-sm-4"><%=person.name %></label>
                               <label for="vehicle2" class="col-sm-4"> <%=person.email %></label>
                               <input type="checkbox" class="col-sm-4"id="vehicle1" name="vehicle1" value="<%=person._id %>" >
