@@ -80,6 +80,20 @@ exports.list = (req, res) => {
       });
   }); 
 }
+exports.getAllBranches = (req, res) => {
+  new_branch.find({}).sort({createdAt: 'desc'}).find(function(err, branches) {
+      if (err) {
+          return res.status(401).json({
+              error: errorHandler(err)
+          });
+      }
+      return res.json({
+          status:true,
+          message: 'All branches fetched successfully.!',
+          branches
+      });
+  }); 
+}
 
 exports.branchStudentsByBranchId = (req, res) => {
     new_branch.find({_id:req.params.id},function(err, branchData) {
@@ -208,7 +222,6 @@ exports.getPendingRequests = (req, res) => {
       });
    
   };
-
 exports.getAllBranchesForAStudent  = (req, res) => {
     new_branch.find({ students: { $all: [req.params.studentId] }},function(err, branchData) {
         if (err) {

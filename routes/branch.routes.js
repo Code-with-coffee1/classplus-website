@@ -8,6 +8,7 @@ const {
     getPendingRequests,
     removeStudentsFromBranch,
     getAllBranchesForAStudent,
+    getAllBranches,
     branchRequest,
     sendEmail,
     read,
@@ -26,7 +27,9 @@ router.delete('/removeStudentsFromBranch/:id', removeStudentsFromBranch);
 router.put('/addStudentsToBranch/:id', addStudentsToBranch);
 router.get('/getAllBranchesForAStudent/:studentId', getAllBranchesForAStudent);
 router.post('/branch/request/', branchRequest);
-router.get('/getPendingRequests', getPendingRequests)
+router.get('/getPendingRequests', getPendingRequests);
+router.get('/getAllBranches', getAllBranches);
+
 
 
 

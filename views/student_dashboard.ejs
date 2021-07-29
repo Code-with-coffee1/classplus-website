@@ -1342,7 +1342,11 @@
                       <div class="join_Batches">
                         <p>Join new  batch </p>
                         <form method="POST" action="/join_new_batch">
-                            <input class="form-control" type="text" name=batch_id placeholder="enter batch id">
+                            <select  class="form-control" name="batch_id" id="cars">
+                              <% branches.forEach(branch =>{ %> 
+                              <option value="<%= branch._id %>"><%= branch.title %></option> 
+                              <% }) %>  
+                        </select>
                           <button type="submit" class="btn btn-primary submit-doubt">join</button>
                         </form>
 

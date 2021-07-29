@@ -192,20 +192,20 @@ app.get("/create_batches", requireAuthAdmin, function (req, res) {
   });
 });
 
-app.get("/student_dashboard", requireAuth, function (req, res) {
-  if (!localStorage.getItem("userId")) {
-    res.redirect("/api/signout");
-  } else {
-    axios
-      .get(serverRoot + "/api/announcement/getAnnouncementsForAStudentFromAllBranches/" + localStorage.getItem("userId"))
-      .then(function (response1) {
-        if (response1.data.announcementData) res.render("student_dashboard", { user_id: localStorage.getItem("userId"), announcement: response1.data.announcementData, username: localStorage.getItem("name") });
-      })
-      .catch(function (error2) {
-        console.log(error2);
-      });
-  }
-});
+// app.get("/student_dashboard", requireAuth, function (req, res) {
+//   if (!localStorage.getItem("userId")) {
+//     res.redirect("/api/signout");
+//   } else {
+//     axios
+//       .get(serverRoot + "/api/announcement/getAnnouncementsForAStudentFromAllBranches/" + localStorage.getItem("userId"))
+//       .then(function (response1) {
+//         if (response1.data.announcementData) res.render("student_dashboard", { user_id: localStorage.getItem("userId"), announcement: response1.data.announcementData, username: localStorage.getItem("name") });
+//       })
+//       .catch(function (error2) {
+//         console.log(error2);
+//       });
+//   }
+// });
 app.get("/announcements", function (req, res) {
   axios
     .get(serverRoot + "/api/announcement/getAnnouncementsByBranchIdForStudent/" + localStorage.getItem("batchID"))
@@ -463,7 +463,12 @@ app.get("/student_dashboard", function (req, res) {
   axios
     .get(serverRoot + "/api/announcement/getAnnouncementsForAStudentFromAllBranches/" + localStorage.getItem("userId"))
     .then(function (response1) {
-      res.render("student_dashboard", { user_id: localStorage.getItem("userId"), announcement: response1.data.announcementData, username: localStorage.getItem("name") });
+      axios
+      .get(serverRoot + "/api/getAllBranches/")
+      .then(function (branches) {
+  
+        res.render("student_dashboard", { branches: branches.data.branches, user_id: localStorage.getItem("userId"), announcement: response1.data.announcementData, username: localStorage.getItem("name") });
+      });
     })
     .catch(function (error2) {
       console.log(error2);
