@@ -26,7 +26,6 @@ var form = new FormData();
 var fs = require("fs");
 const app = express();
 const jwt = require("jsonwebtoken");
-
 app.set("views", __dirname + "/views");
 app.engine("html", require("ejs").renderFile);
 app.set("view engine", "html");
