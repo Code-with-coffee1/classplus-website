@@ -74,7 +74,7 @@ app.post("/register", function (req, res) {
       });
   }
 });
-
+// empty command
 app.get("/login", function (req, res) {
   res.render("login", { msg: "ok" });
 });
