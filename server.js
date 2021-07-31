@@ -1068,6 +1068,10 @@ app.post("/admin_material", function (req, res) {
     });
   }
 });
+app.get("/admin_attendance",function(req,res){
+  res.render("admin_attendance",{ qs: req.query });
+
+});
 app.get("/admin_video", function (req, res) {
   axios
     .get(serverRoot + "/api/video/getVideoLinksByBranchId/" + localStorage.getItem("batchID"))
