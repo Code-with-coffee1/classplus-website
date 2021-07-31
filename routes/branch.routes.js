@@ -5,9 +5,11 @@ const {
     list,
     branchStudentsByBranchId,
     addStudentsToBranch,
-    
+    getPendingRequests,
     removeStudentsFromBranch,
     getAllBranchesForAStudent,
+    getAllBranches,
+    branchRequest,
     sendEmail,
     read,
     remove,
@@ -24,6 +26,11 @@ router.get('/branchStudentsByBranchId/:id', branchStudentsByBranchId);
 router.delete('/removeStudentsFromBranch/:id', removeStudentsFromBranch);
 router.put('/addStudentsToBranch/:id', addStudentsToBranch);
 router.get('/getAllBranchesForAStudent/:studentId', getAllBranchesForAStudent);
+router.post('/branch/request/', branchRequest);
+router.get('/getPendingRequests', getPendingRequests);
+router.get('/getAllBranches', getAllBranches);
+
+
 
 
 
