@@ -95,7 +95,7 @@ app.post("/register_admin", function (req, res) {
       });
   }
 });
-
+// empty command
 app.get("/login", function (req, res) {
   if (req.cookies && req.cookies.token) {
     const token = req.cookies.token;
