@@ -23696,21 +23696,21 @@ span.value {
     position: initial;
     left: 0;
     bottom: 0;
-    width: 100%;
+    
     color: white;
     text-align: center;
     margin: 0px;
     padding: 0px;
  }
  
-     footer{
+     /* footer{
        width: auto;
        background-color:rgb(212, 204, 204);
        padding: 0 160px 0 ;
        display: flex;
        flex-wrap: wrap;
        justify-content: space-between;
-     }
+     } */
     
     
      footer div .one{
