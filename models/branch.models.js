@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Schema;
-
+const postedBy =  new mongoose.Schema({
+    admin: mongoose.Schema.Types.ObjectId,
+    name: String
+ 
+})
 const branchSchema = new mongoose.Schema(
     {
         title: {
@@ -34,10 +38,7 @@ const branchSchema = new mongoose.Schema(
         // students: [{ 
         //     type: ObjectId,
         //     ref: 'User' }],
-        postedBy: {
-            type: ObjectId,
-            ref: 'User'
-        }
+        postedBy:Object
     },
     { timestamps: true }
 );

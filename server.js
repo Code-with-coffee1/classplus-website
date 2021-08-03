@@ -179,16 +179,15 @@ app.post("/admin_login", function (req, res) {
 });
 
 app.get("/create_batches", requireAuthAdmin, function (req, res) {
-  jwt.verify(req.cookies.tokenAdmin, process.env.JWT_SECRET, async (err, decodedToken) => {
-    axios
-      .get(serverRoot + "/api/branches", { params: { admin: decodedToken._id } })
-      .then(function (response) {
-        res.render("create_batches", { branchData: response.data.userData });
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  });
+  console.log(req.decodedToken);
+  axios
+    .get(serverRoot + "/api/branches", { params: { admin: req.decodedToken._id } })
+    .then(function (response) {
+      res.render("create_batches", { branchData: response.data.userData });
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 });
 
 // app.get("/student_dashboard", requireAuth, function (req, res) {
@@ -270,12 +269,13 @@ app.post("/student_announcement", function (req, res) {
     student_announcement: true,
     announcement: req.body.student_announcement,
   };
+  console.log(obj);
   axios
     .post(serverRoot + "/api/announcement/createAnnouncement", obj)
     .then(function (response) {
       if (response.data.status) {
         axios
-          .get("/api/announcement/getAnnouncementsByBranchIdForStudent/" + localStorage.getItem("batchID"))
+          .get(serverRoot + "/api/announcement/getAnnouncementsByBranchIdForStudent/" + localStorage.getItem("batchID"))
           .then(function (response1) {
             if (response1.data.status) {
               axios
@@ -365,47 +365,41 @@ app.get("/create_batches", function (req, res) {
       console.log(error);
     });
 });
-app.post("/create_batches", function (req, res) {
+app.post("/create_batches", requireAuthAdmin, function (req, res) {
   if (req.body) {
-    const tokenAdmin = req.cookies.tokenAdmin;
-    jwt.verify(tokenAdmin, process.env.JWT_SECRET, (err, decodedToken) => {
-      var obj = {
-        postedBy: decodedToken._id,
-        title: req.body.BatchName,
-        code: req.body.BatchCode,
-        start_date: req.body.date,
-        _class: req.body.class,
-      };
-      axios
-        .post(serverRoot + "/api/branch/create", obj)
-        .then(function (response) {
-          res.redirect("/create_batches");
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    });
+    var obj = {
+      postedBy: req.decodedToken._id,
+      title: req.body.BatchName,
+      code: req.body.BatchCode,
+      start_date: req.body.date,
+      _class: req.body.class,
+    };
+    axios
+      .post(serverRoot + "/api/branch/create", obj)
+      .then(function (response) {
+        res.redirect("/create_batches");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 });
-app.post("/join_new_batch", function (req, res) {
+app.post("/join_new_batch", requireAuth, function (req, res) {
   if (req.body) {
-    const token = req.cookies.token;
-    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
-      const obj = {
-        student_id: decodedToken._id,
-        branch_id: req.body.batch_id,
-      };
+    const obj = {
+      student_id: req.decodedToken._id,
+      branch_id: req.body.batch_id,
+    };
 
-      axios
-        .post(serverRoot + "/api/branch/request", obj)
-        .then(function (response) {
-          console.log(response.data);
-          res.redirect("/student_dashboard");
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    });
+    axios
+      .post(serverRoot + "/api/branch/request", obj)
+      .then(function (response) {
+        console.log(response.data);
+        res.redirect("/student_dashboard");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 });
 app.get("/add_students", function (req, res) {
@@ -436,8 +430,8 @@ app.post("/add_students", function (req, res) {
   if (!Array.isArray(req.body.user)) {
     req.body.user = [req.body.user];
   }
-  console.log(req.body.user)
-  
+  console.log(req.body.user);
+
   axios
     .put(serverRoot + "/api/addStudentsToBranch/" + req.query.id, { students: req.body.user })
     .then(function (response) {
@@ -458,14 +452,12 @@ app.post("/add_students", function (req, res) {
     });
 });
 
-app.get("/student_dashboard", function (req, res) {
+app.get("/student_dashboard", requireAuth, function (req, res) {
+  // console.log(response.data);
   axios
-    .get(serverRoot + "/api/announcement/getAnnouncementsForAStudentFromAllBranches/" + localStorage.getItem("userId"))
+    .get(serverRoot + "/api/announcement/getAnnouncementsForAStudentFromAllBranches/", { params: { id: localStorage.getItem("userId") } })
     .then(function (response1) {
-      axios
-      .get(serverRoot + "/api/getAllBranches/")
-      .then(function (branches) {
-  
+      axios.get(serverRoot + "/api/getAllBranches/").then(function (branches) {
         res.render("student_dashboard", { branches: branches.data.branches, user_id: localStorage.getItem("userId"), announcement: response1.data.announcementData, username: localStorage.getItem("name") });
       });
     })
@@ -473,7 +465,7 @@ app.get("/student_dashboard", function (req, res) {
       console.log(error2);
     });
 });
-app.get("/students", function (req, res) {
+app.get("/students",requireAuthAdmin, function (req, res) {
   axios
     .get(serverRoot + "/api/getAllSignups")
     .then(function (response) {
@@ -483,14 +475,19 @@ app.get("/students", function (req, res) {
       console.log(error);
     });
 });
-app.get("/student_details", function (req, res) {
+app.get("/student_details",requireAuthAdmin ,function (req, res) {
   let id = req.query.id;
   axios
     .get(serverRoot + "/api/getStudentsById/" + id)
     .then(function (response) {
+      axios
+      .get(serverRoot+"/api/getAllBranchesForAStudent/" + id)
+      .then(function(branchesData){
+        console.log(branchesData.data.result[3].postedBy)
       let x = response.data.userData[0].name.charAt(0);
-      console.log(response.data.userData);
-      res.render("student_details", { userData: response.data.userData, name: x });
+      // console.log(response.data.userData);
+      res.render("student_details", { userData: response.data.userData, name: x, branchesData:branchesData.data.result});
+      })
     })
     .catch(function (error) {
       console.log(error);

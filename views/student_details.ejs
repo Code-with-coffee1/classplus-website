@@ -183,8 +183,8 @@ p.dotted {border-style: dotted;padding: 10px;}
    </p><!-- or whatever structure you used -->
     <div class="tab" style="width: 900px; height: 48px;    margin-top: 25px;">
         <button class="tablinks active" style="width: 120px;" onclick="openTab(event, 'active_students')">Info</button>
-        <button class="tablinks" style="width: 120px;" onclick="openTab(event, 'inactive_students')">Batches</button>
-        <button class="tablinks" style="width: 120px;" onclick="openTab(event, 'inactive_students')">Courses</button>
+        <button class="tablinks" style="width: 120px;" onclick="openTab(event, 'enrolled_batches_info')">Batches</button>
+        <button class="tablinks" style="width: 120px;" onclick="openTab(event, 'enrolled_courses_info')">Courses</button>
         <button class="tablinks" style="width: 120px;" onclick="openTab(event, 'inactive_students')">Performance</button>
         <button class="tablinks" style="width: 120px;" onclick="openTab(event, 'inactive_students')">Payments</button>
         <button class="tablinks" style="width: 120px;" onclick="openTab(event, 'inactive_students')">Assignments</button>
@@ -317,6 +317,22 @@ p.dotted {border-style: dotted;padding: 10px;}
             <div class="panel">
                 <p class="text-light">Text 5</p>
             </div>
+        </div>
+        <div id="enrolled_batches_info" class="tabcontent">
+          <div class="row">
+            <% branchesData.forEach(branch=>{ %> 
+          <div class="column" >
+            <i class='fas fa-user-alt icon1'></i>
+            <div class="icon_div">
+              <span>Name*</span><br>
+              <span><%=branch.title%></span>
+              <br>
+              <span>Teacher: <%=branch.postedBy.name%></span>
+
+            </div>                
+          </div>
+          <% }) %> 
+        </div>
         </div>
         <div id="inactive_students" class="tabcontent">
             <h3>inactive</h3>

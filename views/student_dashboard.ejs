@@ -147,36 +147,25 @@
                       <h6>Notifications</h6>
                       <label class="label label-danger">New</label>
                     </li>
+                    <% announcement.forEach(value=>{ %> 
                     <li>
                       <div class="media">
                         <img class="d-flex align-self-center img-radius" src="assets\images\avatar-4.webp" alt="Generic placeholder image">
                         <div class="media-body">
                           <h5 class="notification-user"> <%= username %> </h5>
-                          <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
-                          <span class="notification-time">30 minutes ago</span>
+                          <p class="notification-msg"><%= value.announcement %> </p>
+                          <% let date = new Date(value.createdAt) %>
+                          <% let millis = Date.now() - date.getTime()%> 
+                          <%   let hours = Math.floor(millis / 3600000);%>
+                          <%   let minutes = Math.floor(millis / 60000 - hours*60);%>
+                          <%   let seconds = ((millis % 60000) / 1000).toFixed(0);%>
+                          <%   date = hours +"h "+minutes + "m " + (seconds < 10 ? '0' : '') + seconds + 's';%>
+                          <p class="notification-time"><%=date%> ago</p>
                         </div>
                       </div>
                     </li>
-                    <li>
-                      <div class="media">
-                        <img class="d-flex align-self-center img-radius" src="assets\images\avatar-3.webp" alt="Generic placeholder image">
-                        <div class="media-body">
-                          <h5 class="notification-user">Joseph William</h5>
-                          <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
-                          <span class="notification-time">30 minutes ago</span>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="media">
-                        <img class="d-flex align-self-center img-radius" src="assets\images\avatar-4.webp" alt="Generic placeholder image">
-                        <div class="media-body">
-                          <h5 class="notification-user">Sara Soudein</h5>
-                          <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
-                          <span class="notification-time">30 minutes ago</span>
-                        </div>
-                      </div>
-                    </li>
+                    <% }) %> 
+                   
                   </ul>
                 </div>
               </li>
@@ -1310,7 +1299,7 @@
                       </div>-->
                       <!-- Suggested MOck Test Ends -->
                       <!-- Your Doubts Start -->
-                      <div class="col-xl-6 col-md-12">
+                      <!-- <div class="col-xl-6 col-md-12">
                         <div class="accordion" id="accordionExample">
                           <div class="card">
                             <div class="card-header" id="headingOne">
@@ -1337,7 +1326,7 @@
                           </div>
 
                         </div>
-                      </div>
+                      </div> -->
 
                       <div class="join_Batches">
                         <p>Join new  batch </p>
@@ -1393,26 +1382,6 @@
             <img class="d-flex align-self-center img-radius" src="assets\images\avatar-4.webp" alt="Generic placeholder image">
             <div class="media-body">
               <h5 class="notification-user"><%= username %></h5>
-              <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
-              <span class="notification-time">30 minutes ago</span>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="media">
-            <img class="d-flex align-self-center img-radius" src="assets\images\avatar-3.webp" alt="Generic placeholder image">
-            <div class="media-body">
-              <h5 class="notification-user">Joseph William</h5>
-              <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
-              <span class="notification-time">30 minutes ago</span>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="media">
-            <img class="d-flex align-self-center img-radius" src="assets\images\avatar-4.webp" alt="Generic placeholder image">
-            <div class="media-body">
-              <h5 class="notification-user">Sara Soudein</h5>
               <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
               <span class="notification-time">30 minutes ago</span>
             </div>
