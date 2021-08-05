@@ -199,6 +199,8 @@ exports.branchRequest = (req, res) => {
                         user,
                         branch
                     });
+                }else{
+                    console.log(err);
                 }
             })
            

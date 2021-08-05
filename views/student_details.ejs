@@ -172,7 +172,7 @@ p.dotted {border-style: dotted;padding: 10px;}
 	
   <div class="card-body">
     <p data-letters="<%=name %>">
-     <div class="name"><%=userData[0].name %></div>
+     <div class="name"><%=userData.name %></div>
      <div><p style="margin-top: -63px;
       margin-left: 100px;"><i class='far fa-comment-alt' style="font-size: 14px;
       margin-right: 5px;
@@ -198,7 +198,7 @@ p.dotted {border-style: dotted;padding: 10px;}
                   <i class='fas fa-user-alt icon1'></i>
                   <div class="icon_div">
                     <span>Name*</span><br>
-                    <span><%=userData[0].name %></span>
+                    <span><%=userData.name %></span>
                   </div>                
                 </div>
                 <div class="column" >
@@ -212,7 +212,7 @@ p.dotted {border-style: dotted;padding: 10px;}
                   <i class="fa fa-envelope icon1"></i>
                   <div class="icon_div">
                     <span>Email*</span><br>
-                    <span><%=userData[0].email %></span>
+                    <span><%=userData.email %></span>
                 </div>
                   
                 </div>
@@ -244,30 +244,30 @@ p.dotted {border-style: dotted;padding: 10px;}
             <div class="panel">
                 <div class="row">
                   <div class="column" >
-                    <% if(userData[0].parentPhoto1){ %> 
-                      <img src="<%=userData[0].parentPhoto1%>" />
+                    <% if(userData.parentPhoto1){ %> 
+                      <img src="<%=userData.parentPhoto1%>" />
                       <%}else{%>
                     <i class='far fa-user-circle icon1'></i>
                     <div class="icon_div">
                         <form action="/modify_student" method="post" enctype="multipart/form-data">
                           <i class="fa fa-plus" style="margin-left: 112px;">&nbsp;&nbsp;</i>Add Parent</p>
                           <input type="file" name="parentPhoto1" id="fileToUpload">
-                          <input type="hidden" name="studentId" value="<%=userData[0]._id%>">
+                          <input type="hidden" name="studentId" value="<%=userData._id%>">
                           <input type="submit" value="Upload Image">
                       </form>
                     </div>  
                     <%}%>              
                   </div>
                   <div class="column" >
-                    <% if(userData[0].parentPhoto2){ %> 
-                      <img src="<%=userData[0].parentPhoto2%>" />
+                    <% if(userData.parentPhoto2){ %> 
+                      <img src="<%=userData.parentPhoto2%>" />
                       <%}else{%>
                     <i class='far fa-user-circle icon1'></i>
                     <div class="icon_div">
                         <form action="/modify_student" method="post" enctype="multipart/form-data">
                           <i class="fa fa-plus" style="margin-left: 112px;">&nbsp;&nbsp;</i>Add Parent</p>
                           <input type="file" name="parentPhoto2" id="fileToUpload">
-                          <input type="hidden" name="studentId" value="<%=userData[0]._id%>">
+                          <input type="hidden" name="studentId" value="<%=userData._id%>">
 
                           <input type="submit" value="Upload Image" >
                       </form>
@@ -321,8 +321,8 @@ p.dotted {border-style: dotted;padding: 10px;}
         <div id="enrolled_batches_info" class="tabcontent">
           <div class="row">
             <% branchesData.forEach(branch=>{ %> 
-          <div class="column" >
-            <i class='fas fa-user-alt icon1'></i>
+          <div class="column border-1" >
+            <i class='fas fa-chalkboard-teacher icon1'></i>
             <div class="icon_div">
               <span>Name*</span><br>
               <span><%=branch.title%></span>

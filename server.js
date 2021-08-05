@@ -390,7 +390,7 @@ app.post("/join_new_batch", requireAuth, function (req, res) {
       student_id: req.decodedToken._id,
       branch_id: req.body.batch_id,
     };
-
+console.log(obj);
     axios
       .post(serverRoot + "/api/branch/request", obj)
       .then(function (response) {
@@ -483,8 +483,7 @@ app.get("/student_details",requireAuthAdmin ,function (req, res) {
       axios
       .get(serverRoot+"/api/getAllBranchesForAStudent/" + id)
       .then(function(branchesData){
-        console.log(branchesData.data.result[3].postedBy)
-      let x = response.data.userData[0].name.charAt(0);
+      let x = response.data.userData.name.charAt(0);
       // console.log(response.data.userData);
       res.render("student_details", { userData: response.data.userData, name: x, branchesData:branchesData.data.result});
       })

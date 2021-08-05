@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="assets/css/rightnavbar.css">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src=" https://kit.fontawesome.com/a076d05399.js"> 
+  </script> 
   <!-- Meta -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
@@ -534,118 +536,42 @@
                       <!--  sale analytics start -->
 
 
-                      <!-- carousel  -->
+                      <!-- Join new batches section  -->
+                       
+                      <section class="new-batches">
+                        <div   class="row">
+
+                              <% branches.slice(0,6).forEach(branch =>{ %> 
+                                <% if(!branch.students.includes(user_id)){ %>
+                                  <div class="d-flex felx-row"></div>
+                                  <form method="POST" action="/join_new_batch">
+                                    <div class="card" style="width: 12rem; height: 150px;">
+                                      <div class="card-body">
+                                        <img style="width: 10rem;" src="assets/images/books.jpg" class="card-img-top" alt="...">
+                                        <h5 class="card-title" style="white-space: nowrap;"><%= branch.title %> </h5>
+                                        <p class="card-text">Mentor : <%=branch.postedBy.name %> </p>
+                                        <p class="card-text"><i class="far fa-calendar-alt"></i> : <%= new Date(branch.start_date).toISOString().split('T')[0] %> </p>
+
+                                        <input type="hidden" name="batch_id" value="<%= branch._id %>">
+                                        <button type="submit" class="btn btn-primary">Join</a>
+                                      </div>
+                                    </div>
+                                  </form>
+                                  <% } %> 
+                                  <% }) %> 
+                                  <div  class="move_btn">
+                                    <a href="#" class="btn btn-primary">More</a>
+                                  </div> 
+                                </div>
+                                  
+                                   
+                                
+                        </section>
+                                  
                     
-                      <div style="display: contents; justify-content: center;" class="col-xl-9 col-md-12">
-                        <div class="card" style="width: 12rem; height: 150px;">
-                          <img style="width: 10rem;" src="assets/images/english.jpg" class="card-img-top" alt="...">
-                          <div class="card-body">
-                            <h5 class="card-title">Basic English</h5>
-                            <p class="card-text">Detailes course on English Basic</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                          </div>
-                        </div>
-
-                
-
-                        <div class="card" style="width: 12rem; ">
-                          <img style="width: 10rem; height: 150px;" src="assets/images/maths.jpeg" class="card-img-top" alt="...">
-                          <div class="card-body">
-                            <h5 class="card-title">Basic Maths</h5>
-                            <p class="card-text">Detailes course on Mathametics Basic</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                          </div>
-                        </div>
-                        
-                        <div class="card" style="width: 12rem;">
-                          <img style="width: 10rem; height: 150px;" src="assets/images/science.jpg" class="card-img-top" alt="...">
-                          <div class="card-body">
-                            <h5 class="card-title">Basic Science</h5>
-                            <p class="card-text">Detailes course on Science Basic</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                          </div>
-                        </div>
-
-                        <div class="card" style="width: 12rem;">
-                          <img style="width: 10rem; height: 150px;" src="assets/images/ss.jpg" class="card-img-top" alt="...">
-                          <div class="card-body">
-                            <h5 class="card-title">Basic Science</h5>
-                            <p class="card-text">Detailes course on Science Basic</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                          </div>
-                        </div>
-                        <div class="card" style="width: 12rem; height: 150px;">
-                          <img style="width: 10rem;" src="assets/images/english.jpg" class="card-img-top" alt="...">
-                          <div class="card-body">
-                            <h5 class="card-title">Basic English</h5>
-                            <p class="card-text">Detailes course on English Basic</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                          </div>
-                        </div>
-
-                
-
-                        <div class="card" style="width: 12rem; ">
-                          <img style="width: 10rem; height: 150px;" src="assets/images/maths.jpeg" class="card-img-top" alt="...">
-                          <div class="card-body">
-                            <h5 class="card-title">Basic Maths</h5>
-                            <p class="card-text">Detailes course on Mathametics Basic</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                          </div>
-                        </div>
-                        
-                        <div class="card" style="width: 12rem;">
-                          <img style="width: 10rem; height: 150px;" src="assets/images/science.jpg" class="card-img-top" alt="...">
-                          <div class="card-body">
-                            <h5 class="card-title">Basic Science</h5>
-                            <p class="card-text">Detailes course on Science Basic</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                          </div>
-                        </div>
-
-                        <div class="card" style="width: 12rem;">
-                          <img style="width: 10rem; height: 150px;" src="assets/images/ss.jpg" class="card-img-top" alt="...">
-                          <div class="card-body">
-                            <h5 class="card-title">Basic Science</h5>
-                            <p class="card-text">Detailes course on Science Basic</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                          </div>
-                        </div>
-
-                        <div class="card" style="width: 12rem; height: 150px;">
-                          <img style="width: 10rem;" src="assets/images/english.jpg" class="card-img-top" alt="...">
-                          <div class="card-body">
-                            <h5 class="card-title">Basic English</h5>
-                            <p class="card-text">Detailes course on English Basic</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                          </div>
-                        </div>
-
-                        <div class="card" style="width: 12rem; ">
-                          <img style="width: 10rem; height: 150px;" src="assets/images/maths.jpeg" class="card-img-top" alt="...">
-                          <div class="card-body">
-                            <h5 class="card-title">Basic Maths</h5>
-                            <p class="card-text">Detailes course on Mathametics Basic</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                          </div>
-                        </div>
-                 
-
-
-                       
-  
-  
-                       
                       
-                       
-                      
-                        
-                        
 
-
-                        
-                        
-
+                        <!-- <div style="display: contents; justify-content: center;" class="col-xl-9 col-md-12"> -->
                         <!-- <div class="card">
 
                           <div class="caro">
@@ -687,10 +613,8 @@
                           </div>
                         </div> -->
                         
-                      </div>
-                      <div style="display: block;" class="move_btn">
-                        <a href="#" class="btn btn-primary">More</a>
-                      </div>
+                      <!-- </div> -->
+                     
                       
                       <!-- carousel -->
 
@@ -1422,7 +1346,7 @@
                       <!-- Suggested MOck Test Ends -->
                       <!-- Your Doubts Start -->
                       
-                      <div class="col-xl-6 col-md-12">
+                      <!-- <div class="col-xl-6 col-md-12">
                         <div class="accordion" id="accordionExample">
                           <div class="card">
                             <div class="card-header" id="headingOne">
@@ -1449,20 +1373,9 @@
                           </div>
 
                         </div>
-                      </div> -->
+                      </div>  -->
 
-                      <div class="join_Batches">
-                        <p>Join new  batch </p>
-                        <form method="POST" action="/join_new_batch">
-                            <select  class="form-control" name="batch_id" id="cars">
-                              <% branches.forEach(branch =>{ %> 
-                              <option value="<%= branch._id %>"><%= branch.title %></option> 
-                              <% }) %>  
-                        </select>
-                          <button type="submit" class="btn btn-primary submit-doubt">join</button>
-                        </form>
-
-                     </div>
+                    
                       <!-- Your Doubts ends -->
 
 
