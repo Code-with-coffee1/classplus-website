@@ -7,3 +7,9 @@
     line-height: 15px;
     text-align: center;
 }
+.join_Batches {
+    
+    height: fit-content;
+     display: inline-block;
+     font-weight: bold;
+}

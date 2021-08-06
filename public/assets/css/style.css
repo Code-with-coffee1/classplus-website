@@ -40,7 +40,7 @@ html {
     line-height: 1.15;
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
-    -ms-overflow-style: scrollbar;
+    -ms-overflow-style:scrollbar;
     -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;
 }
@@ -335,7 +335,7 @@ body, a, span {
     }
 }
 
-}
+
 
 
 
@@ -23697,14 +23697,15 @@ span.value {
     left: 0;
     bottom: 0;
     width: 100%;
-    background-color: red;
     color: white;
     text-align: center;
+    margin: 0px;
+    padding: 0px;
  }
  
      footer{
        width: auto;
-       background-color: #333;
+       background-color:#333;
        padding: 0 160px 0 ;
        display: flex;
        flex-wrap: wrap;
@@ -23726,6 +23727,7 @@ span.value {
      }
      footer .details div p{
        text-transform: uppercase;
+      
      }
      footer .details div span{
        margin-bottom: 20px;
@@ -23774,6 +23776,11 @@ span.value {
        text-align: center;
        line-height: 20px;
      }
+     footer .newsletter .p2tag{
+         border-bottom: 2px solid white;
+        margin: 10px;
+     }
+
      footer .newsletter a:first-of-type{
        background-color: #4267B2;
      }

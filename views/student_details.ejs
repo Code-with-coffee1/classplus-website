@@ -244,18 +244,35 @@ p.dotted {border-style: dotted;padding: 10px;}
             <div class="panel">
                 <div class="row">
                   <div class="column" >
+                    <% if(userData[0].parentPhoto1){ %> 
+                      <img src="<%=userData[0].parentPhoto1%>" />
+                      <%}else{%>
                     <i class='far fa-user-circle icon1'></i>
                     <div class="icon_div">
-                      <p class="dotted">
-                        <i class="fa fa-plus" style="margin-left: 112px;">&nbsp;&nbsp;</i>Add Parent</p>
-                    </div>                
+                        <form action="/modify_student" method="post" enctype="multipart/form-data">
+                          <i class="fa fa-plus" style="margin-left: 112px;">&nbsp;&nbsp;</i>Add Parent</p>
+                          <input type="file" name="parentPhoto1" id="fileToUpload">
+                          <input type="hidden" name="studentId" value="<%=userData[0]._id%>">
+                          <input type="submit" value="Upload Image">
+                      </form>
+                    </div>  
+                    <%}%>              
                   </div>
                   <div class="column" >
+                    <% if(userData[0].parentPhoto2){ %> 
+                      <img src="<%=userData[0].parentPhoto2%>" />
+                      <%}else{%>
                     <i class='far fa-user-circle icon1'></i>
                     <div class="icon_div">
-                      <p class="dotted">
-                        <i class="fa fa-plus" style="margin-left: 112px;">&nbsp;&nbsp;</i>Add Parent</p>
-                    </div>
+                        <form action="/modify_student" method="post" enctype="multipart/form-data">
+                          <i class="fa fa-plus" style="margin-left: 112px;">&nbsp;&nbsp;</i>Add Parent</p>
+                          <input type="file" name="parentPhoto2" id="fileToUpload">
+                          <input type="hidden" name="studentId" value="<%=userData[0]._id%>">
+
+                          <input type="submit" value="Upload Image" >
+                      </form>
+                    </div>  
+                    <%}%>              
                   </div>
                 </div>
             </div>

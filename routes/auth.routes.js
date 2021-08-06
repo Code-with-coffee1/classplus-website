@@ -2,10 +2,14 @@ const express = require('express');
 const router = express.Router();
 const {
     signup,
+    signupAdmin,
     signin,
+    signinAdmin,
     signout,
+    signoutAdmin,
     getAllSignups,
     getStudentsById,
+    modifyStudent,
     editTestsOfStudent
 } = require('../controllers/auth.controllers');
 
@@ -13,15 +17,21 @@ const {
 const { runValidation } = require('../validators/index.validators');
 const {
     userSignupValidator,
-    userSigninValidator
+    userSigninValidator,
+    adminSignupValidator
 } = require('../validators/auth.validators');
 
 router.post('/signup',userSignupValidator, runValidation, signup);
+router.post('/signupAdmin', adminSignupValidator,runValidation,signupAdmin);
 router.post('/signin', userSigninValidator, runValidation, signin);
+router.post('/signinAdmin', userSigninValidator, runValidation, signinAdmin);
 router.get('/signout', signout);
+router.get('/signoutAdmin', signoutAdmin);
 router.get('/getAllSignups', getAllSignups)
 router.get('/getStudentsById/:id', getStudentsById)
+router.post('/modifyStudent', modifyStudent)
 router.put('/editTestsOfStudent/:id', editTestsOfStudent)
+
 
 
 // const app = express();
