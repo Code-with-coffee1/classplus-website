@@ -76,7 +76,8 @@ exports.getAnnouncementsByBranchIdForStudent = (req, res) => {
 }
 
 exports.getAnnouncementsForAStudentFromAllBranches = (req, res) => {
-    new_branch.find({ students: { $all: [req.params.id] }},{students:0},function(err, branchData) {
+  
+    new_branch.find({ students: { $all: [req.query.id] }},{students:0},function(err, branchData) {
         if (err) {
             return res.status(401).json({
                 error: errorHandler(err)

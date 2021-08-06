@@ -23696,21 +23696,21 @@ span.value {
     position: initial;
     left: 0;
     bottom: 0;
-    width: 100%;
+    
     color: white;
     text-align: center;
     margin: 0px;
     padding: 0px;
  }
  
-     footer{
+     /* footer{
        width: auto;
-       background-color:#333;
+       background-color:rgb(212, 204, 204);
        padding: 0 160px 0 ;
        display: flex;
        flex-wrap: wrap;
        justify-content: space-between;
-     }
+     } */
     
     
      footer div .one{
@@ -23777,7 +23777,7 @@ span.value {
        line-height: 20px;
      }
      footer .newsletter .p2tag{
-         border-bottom: 2px solid white;
+         border-bottom: 2px solid rgb(105, 102, 102);
         margin: 10px;
      }
 
