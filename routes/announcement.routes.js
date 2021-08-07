@@ -15,6 +15,6 @@ router.post('/announcement/createAnnouncement', createAnnouncement);
 router.get('/announcement/getAllAnnouncements', getAllAnnouncements);
 router.get('/announcement/getAnnouncementsByBranchIdForAdmin/:id', getAnnouncementsByBranchIdForAdmin);
 router.get('/announcement/getAnnouncementsByBranchIdForStudent/:id', getAnnouncementsByBranchIdForStudent);
-router.get('/announcement/getAnnouncementsForAStudentFromAllBranches/:id', getAnnouncementsForAStudentFromAllBranches);
+router.get('/announcement/getAnnouncementsForAStudentFromAllBranches/', getAnnouncementsForAStudentFromAllBranches);
 
 module.exports = router;

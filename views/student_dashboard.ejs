@@ -10,6 +10,8 @@
   <link rel="stylesheet" href="assets/css/rightnavbar.css">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src=" https://kit.fontawesome.com/a076d05399.js"> 
+  </script> 
   <!-- Meta -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
@@ -147,36 +149,25 @@
                       <h6>Notifications</h6>
                       <label class="label label-danger">New</label>
                     </li>
+                    <% announcement.forEach(value=>{ %> 
                     <li>
                       <div class="media">
                         <img class="d-flex align-self-center img-radius" src="assets\images\avatar-4.webp" alt="Generic placeholder image">
                         <div class="media-body">
                           <h5 class="notification-user"> <%= username %> </h5>
-                          <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
-                          <span class="notification-time">30 minutes ago</span>
+                          <p class="notification-msg"><%= value.announcement %> </p>
+                          <% let date = new Date(value.createdAt) %>
+                          <% let millis = Date.now() - date.getTime()%> 
+                          <%   let hours = Math.floor(millis / 3600000);%>
+                          <%   let minutes = Math.floor(millis / 60000 - hours*60);%>
+                          <%   let seconds = ((millis % 60000) / 1000).toFixed(0);%>
+                          <%   date = hours +"h "+minutes + "m " + (seconds < 10 ? '0' : '') + seconds + 's';%>
+                          <p class="notification-time"><%=date%> ago</p>
                         </div>
                       </div>
                     </li>
-                    <li>
-                      <div class="media">
-                        <img class="d-flex align-self-center img-radius" src="assets\images\avatar-3.webp" alt="Generic placeholder image">
-                        <div class="media-body">
-                          <h5 class="notification-user">Joseph William</h5>
-                          <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
-                          <span class="notification-time">30 minutes ago</span>
-                        </div>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="media">
-                        <img class="d-flex align-self-center img-radius" src="assets\images\avatar-4.webp" alt="Generic placeholder image">
-                        <div class="media-body">
-                          <h5 class="notification-user">Sara Soudein</h5>
-                          <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
-                          <span class="notification-time">30 minutes ago</span>
-                        </div>
-                      </div>
-                    </li>
+                    <% }) %> 
+                   
                   </ul>
                 </div>
               </li>
@@ -543,8 +534,45 @@
                       <!-- task, page, download counter  end -->
 
                       <!--  sale analytics start -->
-                      <div class="col-xl-9 col-md-12">
-                        <div class="card">
+
+
+                      <!-- Join new batches section  -->
+                       
+                      <section class="new-batches">
+                        <div   class="row">
+
+                              <% branches.slice(0,6).forEach(branch =>{ %> 
+                                <% if(!branch.students.includes(user_id)){ %>
+                                  <div class="d-flex felx-row"></div>
+                                  <form method="POST" action="/join_new_batch">
+                                    <div class="card" style="width: 12rem; height: 150px;">
+                                      <div class="card-body">
+                                        <img style="width: 10rem;" src="assets/images/books.jpg" class="card-img-top" alt="...">
+                                        <h5 class="card-title" style="white-space: nowrap;"><%= branch.title %> </h5>
+                                        <p class="card-text">Mentor : <%=branch.postedBy.name %> </p>
+                                        <p class="card-text"><i class="far fa-calendar-alt"></i> : <%= new Date(branch.start_date).toISOString().split('T')[0] %> </p>
+
+                                        <input type="hidden" name="batch_id" value="<%= branch._id %>">
+                                        <button type="submit" class="btn btn-primary">Join</a>
+                                      </div>
+                                    </div>
+                                  </form>
+                                  <% } %> 
+                                  <% }) %> 
+                                  <div  class="move_btn">
+                                    <a href="#" class="btn btn-primary">More</a>
+                                  </div> 
+                                </div>
+                                  
+                                   
+                                
+                        </section>
+                                  
+                    
+                      
+
+                        <!-- <div style="display: contents; justify-content: center;" class="col-xl-9 col-md-12"> -->
+                        <!-- <div class="card">
 
                           <div class="caro">
                             <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -583,8 +611,15 @@
                               </a>
                             </div>
                           </div>
-                        </div>
-                      </div>
+                        </div> -->
+                        
+                      <!-- </div> -->
+                     
+                      
+                      <!-- carousel -->
+
+
+                      
                       <!--<div class="col-xl-3 col-md-12">
                         <div class="card user-card2">
                           <div class="card-block text-center">
@@ -1310,7 +1345,8 @@
                       </div>-->
                       <!-- Suggested MOck Test Ends -->
                       <!-- Your Doubts Start -->
-                      <div class="col-xl-6 col-md-12">
+                      
+                      <!-- <div class="col-xl-6 col-md-12">
                         <div class="accordion" id="accordionExample">
                           <div class="card">
                             <div class="card-header" id="headingOne">
@@ -1337,20 +1373,9 @@
                           </div>
 
                         </div>
-                      </div>
+                      </div>  -->
 
-                      <div class="join_Batches">
-                        <p>Join new  batch </p>
-                        <form method="POST" action="/join_new_batch">
-                            <select  class="form-control" name="batch_id" id="cars">
-                              <% branches.forEach(branch =>{ %> 
-                              <option value="<%= branch._id %>"><%= branch.title %></option> 
-                              <% }) %>  
-                        </select>
-                          <button type="submit" class="btn btn-primary submit-doubt">join</button>
-                        </form>
-
-                     </div>
+                    
                       <!-- Your Doubts ends -->
 
 
@@ -1393,26 +1418,6 @@
             <img class="d-flex align-self-center img-radius" src="assets\images\avatar-4.webp" alt="Generic placeholder image">
             <div class="media-body">
               <h5 class="notification-user"><%= username %></h5>
-              <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
-              <span class="notification-time">30 minutes ago</span>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="media">
-            <img class="d-flex align-self-center img-radius" src="assets\images\avatar-3.webp" alt="Generic placeholder image">
-            <div class="media-body">
-              <h5 class="notification-user">Joseph William</h5>
-              <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
-              <span class="notification-time">30 minutes ago</span>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="media">
-            <img class="d-flex align-self-center img-radius" src="assets\images\avatar-4.webp" alt="Generic placeholder image">
-            <div class="media-body">
-              <h5 class="notification-user">Sara Soudein</h5>
               <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
               <span class="notification-time">30 minutes ago</span>
             </div>

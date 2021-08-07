@@ -37,14 +37,14 @@ exports.sendEmail = (req, res) => {
 
 exports.create = (req, res) => {
     const admin_id = req.body.postedBy;
-    console.log(admin_id)
     Admin.findById(admin_id, (err, admin)=>{
-        console.log(admin)
         if(!err && admin){
+            console.log(admin)
             const {title, code, start_date, _class,students } = req.body;
             const branch = new new_branch({postedBy: admin, title, code, start_date, _class,students });
             branch.save((err, user) => {
                 if (err) {
+                    console.log(err);
                     return res.status(401).json({
                         error: errorHandler(err)
                     });
@@ -67,7 +67,9 @@ exports.create = (req, res) => {
 
 exports.list = (req, res) => {
     console.log(req.query.admin)
-  new_branch.find({postedBy:req.query.admin}).sort({createdAt: 'desc'}).find(function(err, user) {
+    // postedBy:req.query.admin
+    
+    new_branch.find({"postedBy._id":req.query.admin}).sort({createdAt: 'desc'}).find(function(err, user) {
       if (err) {
           return res.status(401).json({
               error: errorHandler(err)
@@ -197,6 +199,8 @@ exports.branchRequest = (req, res) => {
                         user,
                         branch
                     });
+                }else{
+                    console.log(err);
                 }
             })
            

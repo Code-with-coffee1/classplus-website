@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
-
+const Admin = require('./admin.models').schema;
 const new_branchSchema = new mongoose.Schema(
   {
     title: {
@@ -38,10 +38,7 @@ const new_branchSchema = new mongoose.Schema(
     //     ref: "User",
     //   },
     // ],
-    postedBy: {
-      type: ObjectId,
-      ref: "User",
-    },
+    postedBy:Admin
   },
   { timestamps: true }
 );

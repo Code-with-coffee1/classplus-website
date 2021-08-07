@@ -99,7 +99,7 @@ exports.getAllSignups = (req, res) => {
 };
 
 exports.getStudentsById = (req, res) => {
-  User.find({ _id: req.params.id }, (err, user) => {
+  User.findById(req.params.id, (err, user) => {
     if (err) {
       return res.status(401).json({
         error: errorHandler(err),
