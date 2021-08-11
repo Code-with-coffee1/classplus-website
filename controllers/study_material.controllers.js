@@ -10,10 +10,11 @@ var tj = require('templatesjs');
 
 exports.createStudyMaterial = (req, res) => {
     var obj = {
-        pdfName : req.files.file.name,
-        pdfSize : req.files.file.size,
+        pdfName : req.body.fileName,
+        pdfSize : req.body.pdfSize,
+        desc: req.body.desc,
         branchId:req.params.branchId,
-        study_material: req.files.file
+        study_material: req.body.fileUrl
     }
     study_materialSchema.create(obj, (err, item) => {
         if (err) {
@@ -33,7 +34,7 @@ exports.createStudyMaterial = (req, res) => {
 }
 
 exports.getAllStudyMaterials = (req, res) => {
-    study_materialSchema.find({},{branchId:1,study_material:1}, {sort: {createdAt: -1}},(err, study_materials) => {
+    study_materialSchema.find({},{}, {sort: {createdAt: -1}},(err, study_materials) => {
         if (err) {
             return res.status(401).json({
                 error: errorHandler(err)
@@ -47,7 +48,7 @@ exports.getAllStudyMaterials = (req, res) => {
 }
 
 exports.getStudyMaterialsByBranchId = (req, res) => {
-    study_materialSchema.find({branchId:req.params.id},{branchId:1,pdfName:1,pdfSize:1}, {sort: {createdAt: -1}},(err, study_material) => {
+    study_materialSchema.find({branchId:req.params.id},{}, {sort: {createdAt: -1}},(err, study_material) => {
         if (err) {
             return res.status(401).json({
                 error: errorHandler(err)
@@ -70,7 +71,7 @@ exports.getStudyMaterialsForAStudentFromAllBranches = (req, res) => {
             });
         }else{
             var idArray = branchData.map(function (el) { return el._id; });
-            study_materialSchema.find({"branchId" : { "$in" : idArray}},{"branchId": 1,"study_material": 1}, {sort: {createdAt: -1}},(err, study_material) => {
+            study_materialSchema.find({"branchId" : { "$in" : idArray}},{}, {sort: {createdAt: -1}},(err, study_material) => {
                 if (err) {
                     return res.status(401).json({
                         error: errorHandler(err)
@@ -121,41 +122,41 @@ exports.deletestudyMaterial = (req, res) => {
 }
 
 
-    exports.requireSignin = expressJwt({
-        secret: process.env.JWT_SECRET,
-        algorithms: ['HS256']  // req.user
-    });
-    exports.authMiddleware = (req, res, next) => {
-        const authUserId = req.user._id;
-        User.findById({ _id: authUserId }).exec((err, user) => {
-            if (err || !user) {
-                return res.status(400).json({
-                    error: 'User not found'
-                });
-            }
-            req.profile = user;
-            next();
-        });
-    };
+    // exports.requireSignin = expressJwt({
+    //     secret: process.env.JWT_SECRET,
+    //     algorithms: ['HS256']  // req.user
+    // });
+    // exports.authMiddleware = (req, res, next) => {
+    //     const authUserId = req.user._id;
+    //     User.findById({ _id: authUserId }).exec((err, user) => {
+    //         if (err || !user) {
+    //             return res.status(400).json({
+    //                 error: 'User not found'
+    //             });
+    //         }
+    //         req.profile = user;
+    //         next();
+    //     });
+    // };
 
-    exports.adminMiddleware = (req, res, next) => {
-        const adminUserId = req.user._id;
-        User.findById({ _id: adminUserId }).exec((err, user) => {
-            if (err || !user) {
-                return res.status(400).json({
-                    error: 'User not found'
-                });
-            }
+    // exports.adminMiddleware = (req, res, next) => {
+    //     const adminUserId = req.user._id;
+    //     User.findById({ _id: adminUserId }).exec((err, user) => {
+    //         if (err || !user) {
+    //             return res.status(400).json({
+    //                 error: 'User not found'
+    //             });
+    //         }
     
-            if (user.role !== 1) {
-                return res.status(400).json({
-                    error: 'Admin resource. Access denied'
-                });
-            }
+    //         if (user.role !== 1) {
+    //             return res.status(400).json({
+    //                 error: 'Admin resource. Access denied'
+    //             });
+    //         }
     
-            req.profile = user;
-            next();
-        });
-    };
+    //         req.profile = user;
+    //         next();
+    //     });
+    // };
 
    

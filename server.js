@@ -12,6 +12,9 @@ require("dotenv").config();
 const branchRoutes = require("./routes/branch.routes");
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
+const attendanceRoutes = require("./routes/attendance.routes");
+const mime = require("mime");
+
 const announcementRoutes = require("./routes/announcement.routes");
 var multer = require("multer");
 const { requireAuth, requireAuthAdmin, checkUser } = require("./middleware/authMiddleware");
@@ -69,7 +72,19 @@ const serverRoot = "http://localhost:" + (process.env.PORT || 3000);
 app.set("view engine", "ejs");
 
 app.get("/register", function (req, res) {
-  res.render("register", { qs: req.query, msg: "ok" });
+  if (req.cookies && req.cookies.token) {
+    const token = req.cookies.token;
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+      if (err) {
+        res.locals.user = null;
+        res.render("register", { qs: req.query, msg: "ok" });
+      } else {
+        res.redirect("/student_dashboard");
+      }
+    });
+  } else {
+    res.render("register", { qs: req.query, msg: "ok" });
+  }
 });
 app.post("/register", function (req, res) {
   if (req.body && req.body.name) {
@@ -390,7 +405,7 @@ app.post("/join_new_batch", requireAuth, function (req, res) {
       student_id: req.decodedToken._id,
       branch_id: req.body.batch_id,
     };
-console.log(obj);
+    console.log(obj);
     axios
       .post(serverRoot + "/api/branch/request", obj)
       .then(function (response) {
@@ -454,18 +469,26 @@ app.post("/add_students", function (req, res) {
 
 app.get("/student_dashboard", requireAuth, function (req, res) {
   // console.log(response.data);
+  // localStorage.setItem("attendClassId", '')
+
   axios
     .get(serverRoot + "/api/announcement/getAnnouncementsForAStudentFromAllBranches/", { params: { id: localStorage.getItem("userId") } })
     .then(function (response1) {
       axios.get(serverRoot + "/api/getAllBranches/").then(function (branches) {
-        res.render("student_dashboard", { branches: branches.data.branches, user_id: localStorage.getItem("userId"), announcement: response1.data.announcementData, username: localStorage.getItem("name") });
+        res.render("student_dashboard", {
+          branches: branches.data.branches,
+          user_id: localStorage.getItem("userId"),
+          announcement: response1.data.announcementData,
+          username: localStorage.getItem("name"),
+          clockingId: localStorage.getItem("attendClassId"),
+        });
       });
     })
     .catch(function (error2) {
       console.log(error2);
     });
 });
-app.get("/students",requireAuthAdmin, function (req, res) {
+app.get("/students", requireAuthAdmin, function (req, res) {
   axios
     .get(serverRoot + "/api/getAllSignups")
     .then(function (response) {
@@ -475,18 +498,18 @@ app.get("/students",requireAuthAdmin, function (req, res) {
       console.log(error);
     });
 });
-app.get("/student_details",requireAuthAdmin ,function (req, res) {
+app.get("/student_details", requireAuthAdmin, function (req, res) {
   let id = req.query.id;
   axios
     .get(serverRoot + "/api/getStudentsById/" + id)
     .then(function (response) {
-      axios
-      .get(serverRoot+"/api/getAllBranchesForAStudent/" + id)
-      .then(function(branchesData){
-      let x = response.data.userData.name.charAt(0);
-      // console.log(response.data.userData);
-      res.render("student_details", { userData: response.data.userData, name: x, branchesData:branchesData.data.result});
-      })
+      axios.get(serverRoot + "/api/getAllBranchesForAStudent/" + id).then(function (branchesData) {
+        axios.get(serverRoot + "/api/getAllRecords/" + id).then((attendanceRecord) => {
+          let x = response.data.userData.name.charAt(0);
+          // console.log(response.data.userData);
+          res.render("student_details", { userData: response.data.userData, name: x, branchesData: branchesData.data.result, attendanceRecord: attendanceRecord.data });
+        });
+      });
     })
     .catch(function (error) {
       console.log(error);
@@ -1030,42 +1053,71 @@ app.post("/admin_material", function (req, res) {
   if (req.files) {
     var file = req.files.file;
     var filename = file.name;
-    file.mv("./uploads/" + filename, function (err) {
-      if (err) {
-        console.log("*****error****");
-      } else {
-        form.append("file", fs.createReadStream("./uploads/" + filename));
+    const mimeType = mime.getType(filename);
+    const base64data = Buffer.from(file.data).toString("base64");
+    cloudinary.v2.uploader.upload(
+      "data:"+mimeType+";base64," + base64data,
+      {
+        overwrite: true,
+        invalidate: true,
+        resource_type: "auto",
+      },
+      function (error, result) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log(result);
 
-        axios
-          .post(serverRoot + "/api/studyMaterial/createStudyMaterial/" + localStorage.getItem("batchID"), form, { headers: form.getHeaders() })
-          .then(function (response) {
-            if (response.data.study_materialData.length > 0) {
-              res.render("admin_material", { study_materialData: response.data.study_materialData });
-            } else {
-              axios
-                .get(serverRoot + "/api/studyMaterial/getStudyMaterialsByBranchId/" + localStorage.getItem("batchID"))
-                .then(function (response) {
-                  if (response.data.study_materialData.length > 0) {
-                    res.render("admin_material", { study_materialData: response.data.study_materialData });
-                  } else {
-                    res.render("admin_material", { study_materialData: response.data.study_materialData });
-                  }
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
+          const obj = {
+            fileName: filename,
+            desc: req.body.desc,
+            pdfSize: result.bytes,
+            fileUrl: result.secure_url,
+          };
+          axios.post(serverRoot + "/api/studyMaterial/createStudyMaterial/" + localStorage.getItem("batchID"), obj).then((resp) => {
+            if (resp.status) {
+              res.redirect("/admin_material");
+            };
           });
+        }
       }
-    });
+    );
+
+    // file.mv("./uploads/" + filename, function (err) {
+    //   if (err) {
+    //     console.log("*****error****");
+    //   } else {
+    //     form.append("file", fs.createReadStream("./uploads/" + filename));
+
+    //     axios
+    //       .post(serverRoot + "/api/studyMaterial/createStudyMaterial/" + localStorage.getItem("batchID"), form, { headers: form.getHeaders() })
+    //       .then(function (response) {
+    //         if (response.data.study_materialData.length > 0) {
+    //           res.render("admin_material", { study_materialData: response.data.study_materialData });
+    //         } else {
+    //           axios
+    //             .get(serverRoot + "/api/studyMaterial/getStudyMaterialsByBranchId/" + localStorage.getItem("batchID"))
+    //             .then(function (response) {
+    //               if (response.data.study_materialData.length > 0) {
+    //                 res.render("admin_material", { study_materialData: response.data.study_materialData });
+    //               } else {
+    //                 res.render("admin_material", { study_materialData: response.data.study_materialData });
+    //               }
+    //             })
+    //             .catch(function (error) {
+    //               console.log(error);
+    //             });
+    //         }
+    //       })
+    //       .catch(function (error) {
+    //         console.log(error);
+    //       });
+    //   }
+    // });
   }
 });
-app.get("/admin_attendance",function(req,res){
-  res.render("admin_attendance",{ qs: req.query });
-
+app.get("/admin_attendance", function (req, res) {
+  res.render("admin_attendance", { qs: req.query });
 });
 app.get("/admin_video", function (req, res) {
   axios
@@ -1118,56 +1170,42 @@ app.post("/admin_assignment", function (req, res) {
   if (req.files) {
     var file = req.files.file;
     var filename = file.name;
-    file.mv("./uploadAssignments/" + filename, function (err) {
-      if (err) {
-        console.log("*****error****");
-      } else {
-        form.append("file", fs.createReadStream("./uploadAssignments/" + filename));
+    const base64data = Buffer.from(file.data).toString("base64");
+    const mimeType = mime.getType(filename);
+    console.log(file);
+    cloudinary.v2.uploader.upload(
+      "data:"+mimeType+";base64," + base64data,
+      {
+        overwrite: true,
+        invalidate: true,
+        resource_type: "auto",
+      },
+      function (error, result) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log(result);
 
-        axios
-          .post(serverRoot + "/api/assignment/createAssignment/" + localStorage.getItem("batchID"), form, { headers: form.getHeaders() })
-          .then(function (response) {
-            console.log("***********88", response.data.assignmentData);
-            if (Object.keys(response.data.assignmentData).length) {
-              // res.render('assignmentData',{assignmentData:response.data.assignmentData})
-              axios
-                .get(serverRoot + "/api/assignment/getAssignmentsByBranchId/" + localStorage.getItem("batchID"))
-                .then(function (response) {
-                  if (response.data.assignmentData.length > 0) {
-                    res.render("admin_assignment", { assignment_Data: response.data.assignmentData });
-                  } else {
-                    res.render("admin_assignment", { assignment_Data: response.data.assignmentData });
-                  }
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
-            } else {
-              axios
-                .get(serverRoot + "/api/assignment/getAssignmentsByBranchId/" + localStorage.getItem("batchID"))
-                .then(function (response) {
-                  if (response.data.assignmentData.length > 0) {
-                    res.render("admin_assignment", { assignment_Data: response.data.assignmentData });
-                  } else {
-                    res.render("admin_assignment", { assignment_Data: response.data.assignmentData });
-                  }
-                })
-                .catch(function (error) {
-                  console.log(error);
-                });
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+          const obj = {
+            fileName: file.name,
+            title: req.body.title,
+            pdfSize: result.bytes,
+            assignmentUrl: result.secure_url,
+          };
+          axios.post(serverRoot + "/api/assignment/createAssignment/" + localStorage.getItem("batchID"), obj).then((resp) => {
+            if (resp.status) {
+              res.redirect("/admin_assignment");
+            };          });
+        }
       }
-    });
+    );
   }
 });
 app.post("/modify_student", function (req, res) {
   const _id = req.body.studentId;
   const attachment = req.files.parentPhoto1 || req.files.parentPhoto2;
   const base64data = Buffer.from(attachment.data).toString("base64");
+  
   if (req.files) {
     cloudinary.v2.uploader.upload(
       "data:image/png;base64," + base64data,
@@ -1329,7 +1367,18 @@ app.get("/student_assignment", (req, res) => {
       console.log(error);
     });
 });
-
+app.post("/markAttendace", requireAuth, (req, res) => {
+  req.body.user = req.decodedToken._id;
+  axios.post(serverRoot + "/api/markAttendance", req.body).then((response) => {
+    console.log(response.data.data);
+    if (response.data.ended) {
+      localStorage.setItem("attendClassId", "");
+    } else {
+      localStorage.setItem("attendClassId", response.data.data._id);
+    }
+    res.redirect("/student_dashboard");
+  });
+});
 if (process.env.NODE_ENV === "development") {
   app.use(cors({ origin: `${process.env.CLIENT_URL}` }));
 }
@@ -1343,6 +1392,8 @@ app.use("/api", videoRoutes);
 app.use("/api", announcementRoutes);
 app.use("/api", assignmentRoutes);
 app.use("/api", study_materialRoutes);
+app.use("/api", attendanceRoutes);
+
 app.use("/", (req, res) => {
   // res
   // .status(200)

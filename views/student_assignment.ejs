@@ -552,12 +552,12 @@
                                                             <% assignment_Data.forEach(function(pdf) { %>
                                                             <div>
                                                                 <div>
-                                                                    <h6 class="d-inline p-2 bg-dark text-white"><%= pdf.assignment.name %></h6>
+                                                                    <h6 class="d-inline p-2 bg-dark text-white"><%= pdf.assignment %></h6>
                                                                 </div>
                                                                 <div>
-                                                                  <iframe width="500px" height="400px" style="border: none" src="data:text/html;base64,<%=pdf.assignment.data.toString('base64')%>"></iframe>
+                                                                  <iframe width="500px" height="400px" style="border: none" src="<%= pdf.assignmentUrl %>"></iframe>
                                                                 </div>
-                                                                <a  class="btn btn-primary" href="data:text/html;base64,<%=pdf.assignment.data.toString('base64')%>" download >click to download</a>
+                                                                <a  class="btn btn-primary" href="<%= pdf.assignmentUrl %>" download >click to download</a>
                                                                 <h1>Assignment submission</h1>
                                                  <!-- Main content -->
                                                             <form method="POST" action="material_submit" enctype="multipart/form-data">

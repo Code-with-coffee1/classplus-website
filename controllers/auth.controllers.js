@@ -9,7 +9,7 @@ const axios = require("axios");
 
 var fs = require("fs");
 var tj = require("templatesjs");
-var bodyParser = require("body-parser");
+// var bodyParser = require("body-parser");
 
 exports.signup = (req, res) => {
   req.body.username = `profile-${req.body.email}`;

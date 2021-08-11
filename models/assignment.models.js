@@ -18,7 +18,7 @@ const assignmentSchema = new mongoose.Schema(
             type: String,
         },
         assignment: {
-            type: Object,
+            type: String,
             required: true
         }
     },

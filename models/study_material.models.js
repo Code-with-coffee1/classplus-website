@@ -14,8 +14,11 @@ const study_materialSchema = new mongoose.Schema(
         pdfSize:{
             type: String,
         },
+        desc:{
+            type: String,
+        },
         study_material: {
-            type: Object,
+            type: String,
             required: true
         }
     },

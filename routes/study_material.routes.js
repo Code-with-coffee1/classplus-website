@@ -24,7 +24,7 @@ const {
 } = require('../controllers/study_material.controllers');
 
 
-router.post('/studyMaterial/createStudyMaterial/:branchId', upload.single('file'),  createStudyMaterial);
+router.post('/studyMaterial/createStudyMaterial/:branchId',  createStudyMaterial);
 router.get('/studyMaterial/getAllStudyMaterials', getAllStudyMaterials);
 router.get('/studyMaterial/getStudyMaterialsByBranchId/:id', getStudyMaterialsByBranchId);
 router.get('/studyMaterial/getStudyMaterialsForAStudentFromAllBranches/:id', getStudyMaterialsForAStudentFromAllBranches);

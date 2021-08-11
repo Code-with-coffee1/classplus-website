@@ -1,10 +1,4 @@
 const mongoose = require('mongoose');
-const { ObjectId } = mongoose.Schema;
-const postedBy =  new mongoose.Schema({
-    admin: mongoose.Schema.Types.ObjectId,
-    name: String
- 
-})
 const branchSchema = new mongoose.Schema(
     {
         title: {

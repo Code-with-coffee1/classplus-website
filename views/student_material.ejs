@@ -449,12 +449,14 @@
                                     <% study_materialData.forEach(function(pdf) { %>
                                     <div>
                                         <div>
-                                            <h6 class="d-inline p-2 bg-dark text-white"><%= pdf.study_material.name %></h6>
+                                            <h6 class="d-inline p-2 bg-dark text-white"><%= pdf.pdfName %></h6>
                                         </div>
                                         <div>
-                                          <iframe width="500px" height="400px" style="border: none" src="data:text/pdf;base64,<%=pdf.study_material.data.toString()%>"></iframe>
+                                          <iframe width="500px" height="400px" style="border: none" src="<%=pdf.study_material %> "></iframe>
                                         </div>
+                                        <a  class="btn btn-primary" href="<%= pdf.study_material %>" download >click to download</a>
                                         <hr>
+
                                     </div>
                                     <% }) %>
                                 </div>

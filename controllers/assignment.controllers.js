@@ -8,16 +8,23 @@ var path = require('path');
 var fs = require('fs');
 var tj = require('templatesjs');
 var bodyParser = require('body-parser');
+const cloudinary = require('cloudinary');
+cloudinary.config({
+    cloud_name: "husain3012",
+    api_key: process.env.CLOUDINARY_API,
+    api_secret: process.env.CLOUDINARY_SECRET,
+  });
 
 exports.createAssignment = (req, res) => {
   
     var obj = {
         branchId:req.params.branchId,
-        assignment: req.files.file,
-        pdfName : req.files.file.name,
-        pdfSize : req.files.file.size,
-        assignmentUrl: path.join(__dirname, '../uploadAssignments/'+req.files.file.name)
+        assignment: req.body.title,
+        pdfName : req.body.fileName,
+        pdfSize : req.body.pdfSize,
+        assignmentUrl: req.body.assignmentUrl
     }
+    console.log(obj);
     assignmentSchema.create(obj, (err, item) => {
         if (err) {
             return res.status(401).json({
@@ -53,7 +60,7 @@ exports.getAllAssignments = (req, res) => {
 const { PDFDocument } = require('pdf-lib');
 
 exports.getAssignmentsByBranchId = (req, res) => {
-    assignmentSchema.find({branchId:req.params.id},{branchId:1,assignmentUrl:1,pdfName:1,pdfSize:1}, {sort: {createdAt: -1}},(err, assignment) => {
+    assignmentSchema.find({branchId:req.params.id},{branchId:1,assignment:1,assignmentUrl:1,pdfName:1,pdfSize:1}, {sort: {createdAt: -1}},(err, assignment) => {
         if (err) {
             return res.status(401).json({
                 error: errorHandler(err)
@@ -91,7 +98,7 @@ exports.getAssignmentsForAStudentFromAllBranches = (req, res) => {
             });
         }else{
             var idArray = branchData.map(function (el) { return el._id; });
-            assignmentSchema.find({"branchId" : { "$in" : idArray}},{"branchId": 1,"assignment": 1}, {sort: {createdAt: -1}},(err, assignment) => {
+            assignmentSchema.find({"branchId" : { "$in" : idArray}},{"branchId": 1,"assignment": 1, "assignmentUrl": 1}, {sort: {createdAt: -1}},(err, assignment) => {
                 if (err) {
                     return res.status(401).json({
                         error: errorHandler(err)
@@ -112,16 +119,22 @@ exports.getAssignmentsForAStudentFromAllBranches = (req, res) => {
 }
 
 exports.deleteAssignment = (req, res) => {
-    assignmentSchema.deleteMany({},(err, assignment) => {
-        if (err) {
-            return res.status(401).json({
-                error: errorHandler(err)
-            });
-        }else{
-            return res.json({
-                message: 'assignment deleted.!',
-            });
-        }
+    assignmentSchema.findOneAndRemove({_id:req.body.id},(err, assignment) => {
+        let public_ids = [];
+        public_ids.push(assignment.assignmentUrl.slice(assignment.assignmentUrl.lastIndexOf('/')+1,-4))
+        cloudinary.v2.api.delete_resources(public_ids,{}, result=>{
+            console.log(result);
+            if (err) {
+                return res.status(401).json({
+                    error: errorHandler(err)
+                });
+            }else{
+                return res.json({
+                    message: 'assignment deleted.!',
+                });
+            }
+        });
+       
     });
 }
 

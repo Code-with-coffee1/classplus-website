@@ -219,6 +219,7 @@ body {
           <div>
             <label for="file" >Choose file to upload</label><br/>
           <input type="file" name="file">
+          <textarea name="desc" id="" cols="60" rows="10"></textarea>
             <div id="pdf-loader" style="display:none">Loading Preview ..</div>
             <canvas id="pdf-preview" width="150" style="display:none"></canvas> 
         
@@ -237,11 +238,13 @@ body {
         <% for(var pdf of study_materialData){ %>
             
           <div>
-                <a href="/getpdf?id=<%=pdf._id%>&studyMaterial=true">
+                <a target="_blank" href="<%= pdf.study_material %>">
                   <!-- <div class="card bg-light text-dark"> -->
                     <div class="card">
-                        <h4>TITLE:<%=pdf.pdfName%></h4>
-                        <h5>PDF size:<%=pdf.pdfSize%></h5>
+                        <h4>TITLE: <%=pdf.pdfName%></h4>
+                        <% let size = pdf.pdfSize/1000 %> 
+                        <h5>(<%= (size>1000?Math.floor(size/1000*10)/10 +" MB":size + " KB") %>)</h5>
+                        <p><%=pdf.desc%></p>
                     </div>
                     <!-- </div> -->
                 </a >

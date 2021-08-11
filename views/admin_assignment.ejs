@@ -217,7 +217,9 @@ body {
     <!-- Main content -->
     <form method="POST" action="/admin_assignment" enctype="multipart/form-data">
       <div>
+        
         <label for="file" >Choose file to upload</label><br/>
+        <input type="text" name="title" id="">
       <input type="file" name="file">
         <div id="pdf-loader" style="display:none">Loading Preview ..</div>
         <canvas id="pdf-preview" width="150" style="display:none"></canvas> 
@@ -239,11 +241,12 @@ body {
           <% for(var pdf of assignment_Data){ %>
             
           <div>
-                <a href="/getpdf?id=<%=pdf._id%>&assignment=true">
+                <a target="_blank" href="<%= pdf.assignmentUrl %> ">
                   <!-- <div class="card bg-light text-dark"> -->
                     <div class="card">
-                        <h4>TITLE:<%=pdf.pdfName%></h4>
-                        <h5>PDF size:<%=pdf.pdfSize%></h5>
+                        <h4>TITLE:<%=pdf.assignment%></h4>
+                        <% size = Math.floor(pdf.pdfSize/1000) %> 
+                        <h5><%=pdf.pdfName%> (<%= (size>1000?Math.floor(size/1000*10)/10 +" MB":size + " KB") %>)</h5>
                     </div>
                     <!-- </div> -->
                 </a >
