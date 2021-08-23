@@ -1337,9 +1337,9 @@ app.get("/getpdf", function (req, res) {
 });
 app.get("/add_students_mail", (req, res) => {
   axios
-    .get(serverRoot + "/api/getAllSignups")
-    .then(function (allSignups) {
-      res.render("add_students_mail", { userData: allSignups.data.userData });
+    .get(serverRoot + "/api/branchStudentsByBranchId/" + localStorage.getItem("batchID"))
+    .then(function (response) {
+      res.render("add_students_mail", { userData: response.data.studentslist });
     })
     .catch(function (error) {
       console.log(error);
@@ -1358,7 +1358,7 @@ app.get("/add_batches_mail", (req, res) => {
 var names = [];
 var emailIds = [];
 app.post("/add_students_mail", (req, res) => {
-  if(req.body.vehicle1.isArray()){
+  if(Array.isArray(req.vehicle1)){
     req.body.vehicle1.forEach((element) => {
       var [before, after] = element.split("|");
       names.push(before);
