@@ -1,4 +1,6 @@
 const assignmentSchema = require('../models/assignment.models');
+const studentAssignmentSchema = require('../models/student_assignment.models');
+const mongoose = require("mongoose")
 const new_branch = require('../models/new_branch.models');
 var bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken');
@@ -27,6 +29,7 @@ exports.createAssignment = (req, res) => {
     console.log(obj);
     assignmentSchema.create(obj, (err, item) => {
         if (err) {
+            console.log(err);
             return res.status(401).json({
                 status:false,
                 error: errorHandler(err)
@@ -138,6 +141,41 @@ exports.deleteAssignment = (req, res) => {
     });
 }
 
+exports.submitStudentAssignment = (req,res)=>{
+    var obj = {
+        submittedBy:mongoose.Types.ObjectId(req.params.id),
+        assignmentId:mongoose.Types.ObjectId(req.body.assignmentId),
+        pdfName : req.body.fileName,
+        pdfSize : req.body.pdfSize,
+        url: req.body.url
+    }
+    console.log(obj);
+    studentAssignmentSchema.create(obj, (err, item) => {
+        if (err) {
+            return res.status(401).json({
+                status:false,
+                error: errorHandler(err)
+            });
+        }
+        else {
+            res.status(200).json({
+                status:true,
+                message: 'assignment is submitted successfuly.!',
+                assignmentData:item
+            });
+        }
+    });
+}
+
+exports.getAllStudentAssignments = (req,res)=>{
+    studentAssignmentSchema.find({"submittedBy": mongoose.Types.ObjectId(req.params.id)}, (err, assignments)=>{
+        if(err){
+            console.log(err)
+            return res.status(404)
+        }
+        return res.json(assignments)
+    })
+}
 
 
     exports.requireSignin = expressJwt({

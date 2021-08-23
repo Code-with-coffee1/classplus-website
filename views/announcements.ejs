@@ -426,7 +426,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Hind+Vadodara:wght@300;500&display=swap" rel="stylesheet">
 
 <!-- navbar call -->
-<%- include('./partials/navbar.ejs') %>
+<%- include('./partials/navbar_admin') %>
   <div class="main">
     <div class="sidebar">
       <ul>
@@ -505,6 +505,20 @@
                 <label>Make Announcement For <strong>STUDENTS</strong></label>
                 <textarea type="text" id="editor1" onfocus="ckedit(this)"  name="student_announcement" class="form-control" ></textarea>
               </div>
+              <div class="form-group">
+                <input name="isClassAnnouncement" id="isClassAnnouncement"  type="checkbox">
+                <label for="isClassAnnouncement">This is a live class announcement.</label>
+              </div>
+          
+                <div id="classAnnouncementForm" class="form-group d-none"> 
+                  <label class="control-label" for="link">Link to the class</label>
+                <input class="form-control" name="link" type="text">
+                  <label class="control-label " for="date">Schedule Class:</label>
+                  <div class="class-schedule">
+                    <input class="form-control " id="date" name="classDate" type="date" />
+                    <input class="form-control " id="time" name="classTime" type="time"/>
+                  </div>
+                </div>
   
               <!-- <div class="form-group">
                 <label for="exampleInputEmail1"></label>
@@ -598,6 +612,7 @@
       <div class="card-body">No admin announcements are found.!</div>
     </div>
  <% } %>-->
+
 </body> 
 <script src="/assets/ckeditor5/build/ckeditor.js"></script>
 <script  src="/javascripts/ckeditor.js"></script>
@@ -608,5 +623,18 @@
   
      <!--Include jQuerry-->
      <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+     <script>
+       $("#isClassAnnouncement").click(e => {
+        $("#classAnnouncementForm input").val("");
+         if($("#isClassAnnouncement").is(':checked')){
+          $("#classAnnouncementForm").removeClass("d-none");
+         $(".class-schedule input").prop('required',true);
+         }else{
+          $("#classAnnouncementForm").addClass("d-none");
+         $(".class-schedule input").removeAttr('required');
+         }
+        })
+     </script>
   
 </html> 

@@ -89,146 +89,8 @@
         <div class="pcoded-container navbar-wrapper">
 
 
-            <header class="navbar header-navbar pcoded-header">
-                <div class="navbar-wrapper">
-
-                    <nav class="btn-pluss-wrapper1">
-                        <div href="#" class="btn-pluss rightbar">
-                            <ul>
-                                <li><img class="img1" src="./assets/images/tests.svg" alt="tests">
-                                </li>
-                                <li><img class="img2" src="./assets/images/quizzes.svg" alt="quizzes"></li>
-                                <li><img class="img3" src="./assets/images/classes.svg" alt="classes"></li>
-                            </ul>
-                        </div>
-                    </nav>
-                    <div class="navbar-logo">
-                        <a class="mobile-menu" id="mobile-collapse" href="#!">
-                            <i class="feather icon-menu"></i>
-                            <a class="right_bar" style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;<span
-                                    class="notinav bg-c-pink">5</span></a>
-
-                        </a>
-
-                        <a href="/student_dashboard">
-                            <img class="logo" src="assets\images\logo.webp" alt="Theme-Logo">
-
-
-                        </a>
-
-                        <a class="mobile-options">
-                            <i class="feather icon-more-horizontal"></i>
-
-                        </a>
-                    </div>
-
-
-
-
-                    <div class="navbar-container container-fluid">
-                        <ul class="nav-left">
-
-                            <li>
-                                <a href="#!" onclick="javascript:toggleFullScreen()">
-                                    <i class="feather icon-maximize full-screen"></i>
-                                </a>
-                            </li>
-                        </ul>
-                        <ul class="nav-right">
-                            <li class="header-search">
-                                <div class=" morphsearch-search">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Search..">
-                                        <span class="input-group-addon search-btn"><i
-                                                class="feather icon-search"></i></span>
-                                    </div>
-                                </div>
-                            </li>
-                            <a href=""><button class="recharge">Purchase Coins</button></a>
-
-                            <li class="header-notification">
-                                <div class="dropdown-primary dropdown">
-                                    <div class="dropdown-toggle" data-toggle="dropdown">
-                                        <i class="feather icon-bell"></i>
-                                        <span class="badge bg-c-pink">5</span>
-                                    </div>
-                                    <ul class="show-notification notification-view dropdown-menu"
-                                        data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
-
-                                        <li>
-                                            <h6>Notifications</h6>
-                                            <label class="label label-danger">New</label>
-                                        </li>
-                                        <li>
-                                            <div class="media">
-                                                <img class="d-flex align-self-center img-radius"
-                                                    src="assets\images\avatar-4.webp" alt="Generic placeholder image">
-                                                <div class="media-body">
-                                                    <h5 class="notification-user"> </h5>
-                                                    <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer
-                                                        elit.</p>
-                                                    <span class="notification-time">30 minutes ago</span>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="media">
-                                                <img class="d-flex align-self-center img-radius"
-                                                    src="assets\images\avatar-3.webp" alt="Generic placeholder image">
-                                                <div class="media-body">
-                                                    <h5 class="notification-user">Joseph William</h5>
-                                                    <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer
-                                                        elit.</p>
-                                                    <span class="notification-time">30 minutes ago</span>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="media">
-                                                <img class="d-flex align-self-center img-radius"
-                                                    src="assets\images\avatar-4.webp" alt="Generic placeholder image">
-                                                <div class="media-body">
-                                                    <h5 class="notification-user">Sara Soudein</h5>
-                                                    <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer
-                                                        elit.</p>
-                                                    <span class="notification-time">30 minutes ago</span>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-
-                           
-                            <li class="user-profile header-notification">
-                                <div class="dropdown-primary dropdown">
-                                    <div class="dropdown-toggle" data-toggle="dropdown">
-                                        <img src="assets\images\avatar-4.webp" class="img-radius"
-                                            alt="User-Profile-Image">
-
-                                        <i class="feather icon-chevron-down"></i>
-                                    </div>
-                                    <ul class="show-notification profile-notification dropdown-menu"
-                                        data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
-
-                                        <li>
-                                            <a href="/welcome">
-                                                <i class="feather icon-log-out"></i> Logout
-                                            </a>
-                                        </li>
-                                    </ul>
-
-                                </div>
-                            </li>
-
-
-
-
-                        </ul>
-                    </div>
-                </div>
-
-            </header>
+   <%- include("partials/navbar_student") %> 
+            
 
 
             <div class="pcoded-main-container">
@@ -371,7 +233,7 @@
 
                 </li>-->
                                 <li>
-                                    <a href="ncert_solutions.html">
+                                    <a href="/student_classes">
                                         <span class="pcoded-micon"><i class="fa fa-graduation-cap"></i></span>
                                         <span class="pcoded-mtext">Live Classes</span>
                                     </a>
@@ -446,20 +308,31 @@
                         <div class="pcoded-inner-content">
                             <div class="main-body">
                                 <div id="table-scroll">
+                                  <div id="studymaterialList">
+                                  <input type="text" class="fuzzy-search" />
+                                  <button class="sort" data-sort="filename">Sort by name</button>
+                                  <ul class="list">
                                     <% study_materialData.forEach(function(pdf) { %>
-                                    <div>
+                                    <li style="max-width: fit-content;">
                                         <div>
-                                            <h6 class="d-inline p-2 bg-dark text-white"><%= pdf.pdfName %></h6>
+                                            <h6 class="filename d-inline p-2 bg-dark text-white"><%= pdf.pdfName %></h6>
+
                                         </div>
                                         <div>
-                                          <iframe width="500px" height="400px" style="border: none" src="<%=pdf.study_material %> "></iframe>
+                                          <iframe width="500px" height="400px" style="border: none" src="<%=pdf.study_material %>"></iframe>
+                                          
                                         </div>
+                                        <p class="desc p-2 bg-dark text-white"><%= pdf.desc%></p>
                                         <a  class="btn btn-primary" href="<%= pdf.study_material %>" download >click to download</a>
                                         <hr>
 
-                                    </div>
+                                      </li>
+
                                     <% }) %>
+                                  </ul>
                                 </div>
+                                </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -493,6 +366,9 @@
             <script src="assets\js\jquery.mCustomScrollbar.concat.min.js"></script>
             <script type="text/javascript" src="assets\js\SmoothScroll.js"></script>
             <script src="assets\js\pcoded.min.js"></script>
+            <!-- List js -->
+            <script type="text/javascript" src="bower_components\list.js\list.min.js"></script>
+
 
             <!-- custom js -->
             <script src="assets\js\vartical-layout.min.js"></script>
@@ -513,6 +389,15 @@
                     document.getElementById("mySidenav").style.width = "0%";
                 }
             </script>
+
+
+<script>
+  var listOptions = {
+  valueNames: [ 'filename', 'desc' ]
+};
+
+var studymaterialList = new List('studymaterialList', listOptions);
+</script>
             <!-- Global site tag (gtag.js) - Google Analytics -->
             <!-- <script>
     window.dataLayer = window.dataLayer || [];

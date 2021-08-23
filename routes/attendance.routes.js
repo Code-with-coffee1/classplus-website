@@ -4,10 +4,10 @@ const {postAttendance, markAttendance, getAllRecordsOfUser,getByDate} = require(
 
 
 
-router.post("/postAttendance", postAttendance)
-router.post("/markAttendance", markAttendance)
-router.get("/getAllRecords/:id", getAllRecordsOfUser)
-router.get("/getByDate/:id", getByDate)
+router.post("/attendance/postAttendance", postAttendance)
+router.post("/attendance/markAttendance", markAttendance)
+router.get("/attendance/getAllRecords/:id", getAllRecordsOfUser)
+router.get("/attendance/getByDate/:id", getByDate)
 
 
 

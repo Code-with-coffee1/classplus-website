@@ -1,0 +1,143 @@
+<header class="navbar header-navbar pcoded-header">
+    <div class="navbar-wrapper">
+
+      
+      <div class="navbar-logo">
+        <a class="mobile-menu" id="mobile-collapse" href="#!">
+          <i class="feather icon-menu"></i>
+          <a class="right_bar" style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;<span class="notinav bg-c-pink">5</span></a>
+
+        </a>
+
+        <a href="/student_dashboard">
+          <img class="logo" src="assets\images\logo.webp" alt="Theme-Logo">
+
+
+        </a>
+
+        <a class="mobile-options">
+          <i class="feather icon-more-horizontal"></i>
+
+        </a>
+      </div>
+
+
+
+
+      <div class="navbar-container container-fluid">
+        <ul class="nav-left">
+
+          <li>
+            <a href="#!" onclick="javascript:toggleFullScreen()">
+              <i class="feather icon-maximize full-screen"></i>
+            </a>
+          </li>
+        </ul>
+        <ul class="nav-right">
+          <li class="header-search">
+            <div class=" morphsearch-search">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search..">
+                <span class="input-group-addon search-btn"><i class="feather icon-search"></i></span>
+              </div>
+            </div>
+          </li>
+          <a href=""><button class="recharge">Purchase Coins</button></a>
+
+          <li class="header-notification">
+            <div class="dropdown-primary dropdown">
+              <div class="dropdown-toggle" data-toggle="dropdown">
+                <i class="feather icon-bell"></i>
+                <span class="badge bg-c-pink"><%= announcement.length %> </span>
+              </div>
+              <ul class="show-notification notification-view dropdown-menu" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
+
+                <li>
+                  <h6>Notifications</h6>
+                  <label class="label label-danger">New</label>
+                </li>
+                <% announcement.slice(0,6).forEach(value=>{ %> 
+                <li>
+                 
+                  <div class="media">
+                    <img class="d-flex align-self-center img-radius" src="assets\images\avatar-4.webp" alt="Generic placeholder image">
+                    <div class="media-body">
+                      <h5 class="notification-user"> <%= username %> </h5>
+                      <a href="<%= value.isClassAnnouncement?"/student_classes#"+value._id:"#"%>" class="notification-msg"><%- value.announcement %></a>
+                      <% let date = new Date(value.createdAt) %>
+                      <% let millis = Date.now() - date.getTime()%> 
+                      <%   let hours = Math.floor(millis / 3600000);%>
+                      <%   let minutes = Math.floor(millis / 60000 - hours*60);%>
+                      <%   let seconds = ((millis % 60000) / 1000).toFixed(0);%>
+                      <%   date = hours +"h "+minutes + "m " + (seconds < 10 ? '0' : '') + seconds + 's';%>
+                      <p class="notification-time"><%=date%> ago</p>
+                    </div>
+                  </div>
+                </li>
+                <% }) %> 
+               
+              </ul>
+            </div>
+          </li>
+
+          <li>
+            <nav class="btn-pluss-wrapper">
+
+              <div href="#" class="btn-pluss rightbar">
+                <ul>
+                  <li><img class="img1" src="./assets/images/tests.svg" alt="tests">
+                  </li>
+                  <li><img class="img2" src="./assets/images/quizzes.svg" alt="quizzes"></li>
+                  <li><img class="img3" src="./assets/images/classes.svg" alt="classes"></li>
+                </ul>
+              </div>
+            </nav>
+          </li>
+          <li>
+            <form action="/markAttendace" onclick="getTime()" method="POST">
+              <% if(!clockingId){ %> 
+            <input id="clock-in-time" class="clock-time" type="hidden" name="start">
+            <button id="clock-in-button" class="btn btn-primary" href="">Clock In</button>
+            <% }else{ %>
+              <input  type="hidden" name="id" value="<%=clockingId %>">
+            <input id="clock-out-time" class="clock-time" type="hidden" name="end">
+            <button id="clock-out-button" class="btn btn-primary">Clock Out</button>
+            <% } %>
+          </form>
+          </li>
+          <script>
+            function getTime() {
+              const today = new Date();
+              $("input.clock-time").val(today)
+              return true;
+            }
+           </script>
+          <li class="user-profile header-notification">
+            <div class="dropdown-primary dropdown">
+              <div class="dropdown-toggle" data-toggle="dropdown">
+                <img src="assets\images\avatar-4.webp" class="img-radius" alt="User-Profile-Image">
+                <span><%= username %></span>
+                <span id="student_id" class="d-none"><%=user_id%></span>
+                <i class="feather icon-chevron-down"></i>
+              </div>
+              <ul class="show-notification profile-notification dropdown-menu" data-dropdown-in="fadeIn" data-dropdown-out="fadeOut">
+
+                <li>
+                  <a href="/api/signout">
+                    <i class="feather icon-log-out"></i> Logout
+                  </a>
+                </li>
+                
+              </ul>
+
+            </div>
+          </li>
+          
+
+
+
+        </ul>
+      </div>
+    </div>
+
+  </header>

@@ -194,7 +194,7 @@ body {
 <link href="https://fonts.googleapis.com/css2?family=Hind+Vadodara:wght@300;500&display=swap" rel="stylesheet">
 
 <!-- navbar call -->
-<%- include('./partials/navbar.ejs') %>
+<%- include('./partials/navbar_admin') %>
   <div class="main">
     <div class="sidebar">
       <ul>
@@ -219,8 +219,8 @@ body {
       <div>
         
         <label for="file" >Choose file to upload</label><br/>
-        <input type="text" name="title" id="">
-      <input type="file" name="file">
+        <input required="true" type="text" name="title" id="">
+      <input required="true" type="file" name="file">
         <div id="pdf-loader" style="display:none">Loading Preview ..</div>
         <canvas id="pdf-preview" width="150" style="display:none"></canvas> 
     

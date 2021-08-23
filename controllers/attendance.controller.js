@@ -18,6 +18,7 @@ exports.postAttendance = (req, res) => {
   });
 };
 exports.getAllRecordsOfUser = function (req, res) {
+  console.log(req.params);
   AttendClass.find({ "markedBy._id": mongoose.Types.ObjectId(req.params.id) }, function (err, records) {
     console.log(records);
     if (err) res.send(err);
@@ -74,11 +75,17 @@ exports.markAttendance = (req, res) => {
 };
 
 exports.getByDate = function (req, res) {
-  var startDate = new Date(req.body.startDate) ;
-  var endDate = new Date(req.body.endDate);
+  console.log(req.query);
+  var startDate = new Date(parseInt(req.query.startDate)) ;
+  if(req.query.endDate){
+    var endDate = new Date(parseInt(req.query.endDate));
+  }else{
+    var endDate = new Date();
+  }
+  console.log(startDate);
 
   //find all the record whose start & end date is between than starting & ending dates
-  AttendClass.find({ start: { $gte: startDate, $lt: endDate } }, function (err, records) {
+  AttendClass.find({ start: { $gte: startDate, $lt: endDate} }, function (err, records) {
     if (err) res.send(err);
     console.log(records);
     if(records.length>0){
@@ -90,7 +97,7 @@ exports.getByDate = function (req, res) {
               const end =new Date(records[i].end)
 
             formattedrecords.push({
-             start: start.getDate(), end: end.getDate()
+             start: start, end: end
             });
           }
         }

@@ -21,14 +21,18 @@ const {
     getAssignmentsByBranchId,
     getPDFbyAssignmentId,
     deleteAssignment,
-    getAssignmentsForAStudentFromAllBranches
+    getAssignmentsForAStudentFromAllBranches,
+    submitStudentAssignment,
+    getAllStudentAssignments
 } = require('../controllers/assignment.controllers');
 
 
-router.post('/assignment/createAssignment/:branchId', upload.single('file'),  createAssignment);
+router.post('/assignment/createAssignment/:branchId',  createAssignment);
+router.post('/assignment/submitStudentAssignment/:id', submitStudentAssignment)
 router.get('/assignment/getAllAssignments', getAllAssignments);
 router.delete('/assignment/deleteAssignment', deleteAssignment);
 router.get('/assignment/getAssignmentsByBranchId/:id', getAssignmentsByBranchId);
+router.get('/assignment/getAllStudentAssignments/:id',getAllStudentAssignments)
 
 router.get('/assignment/getPDFbyAssignmentId/:id', getPDFbyAssignmentId);
 
