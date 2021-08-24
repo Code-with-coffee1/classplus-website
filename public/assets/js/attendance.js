@@ -6,6 +6,7 @@ $("#dashboard-attendance").click(function (e) {
 
 // attendace chart
 const userId = $("#student_id").text();
+console.log(userId);
 const today = new Date();
 const weekBefore = today.setDate(today.getDate() - 7);
 const weekday = new Array(7);
@@ -17,10 +18,13 @@ weekday[4] = "Thursday";
 weekday[5] = "Friday";
 weekday[6] = "Saturday";
 
+
 axios.get("/api/attendance/getAllRecords/" + userId, { params: { startDate: weekBefore } }).then(function (response) {
+  console.log(response);
   let attendData = {};
 
   response.data.forEach(function (attend) {
+  
 
 
     const start = new Date(attend.start);

@@ -172,10 +172,13 @@ p.dotted {border-style: dotted;padding: 10px;}
 	
   <div class="card-body">
     <p data-letters="<%=name %>">
-     <div class="name"><%=userData.name %></div>
+     <div  class="name"><%=userData.name %></div>
+    
      <div><p style="margin-top: -63px;
-      margin-left: 100px;"><i class='far fa-comment-alt' style="font-size: 14px;
-      margin-right: 5px;
+      margin-left: 100px;">
+      <span id="student_id"  class="d-none m-5"><%= userData._id %></span>
+      <i class='far fa-comment-alt' style="font-size: 14px;
+      margin-right: 5px; margin-left:15px;
       margin-top: -12px;"></i>chat &nbsp; <i class="far fa-envelope-open" style="margin-left: 15px;
       font-size: 14px;
       margin-right: 5px;"></i> send email</p></div>
@@ -338,15 +341,12 @@ p.dotted {border-style: dotted;padding: 10px;}
           <div style="overflow-y: scroll; max-height: 50vh;">
 
    
-            <% attendanceRecord.forEach(clock=>{ %> 
-              <% const start = new Date(clock.start) %> 
-              <% const end = new Date(clock.end) %> 
-              <h5><%= start.getDate() %>/<%= start.getMonth() %>/<%= start.getFullYear() %> </h5>
-              <p>Start: <%= start.getHours() %>:<%= start.getMinutes() %>:<%= end.getSeconds() %></p>
-              <p>End: <%= end.getHours() %>:<%= end.getMinutes() %>:<%= end.getSeconds() %> </p>
-              <h6>Span: <%= Math.floor((end.getTime()-start.getTime())/60/60) %> minute(s)</h6>
-              <hr>
-              <% }) %> 
+            <div class="card">
+              <canvas id="myChart" width="400" height="100"></canvas>
+              
+               
+
+            </div>
             </div>
         </div>
   
@@ -415,5 +415,17 @@ function setClass(els, className, fnName) {
 }
 
   </script>
-  </body>
+
+
+
+<!-- JQuery -->
+  <script type="text/javascript" src="bower_components\jquery\js\jquery.min.js"></script>
+ <!-- Chart js -->
+ <script type="text/javascript" src="bower_components\chart.js\js\Chart.js"></script>
+
+<!-- custom scripts -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script src="./assets/js/attendance.js"></script>
+</body>
   </html> 
