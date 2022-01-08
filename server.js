@@ -17,7 +17,11 @@ const mime = require("mime");
 
 const announcementRoutes = require("./routes/announcement.routes");
 var multer = require("multer");
-const { requireAuth, requireAuthAdmin, checkUser } = require("./middleware/authMiddleware");
+const {
+  requireAuth,
+  requireAuthAdmin,
+  checkUser,
+} = require("./middleware/authMiddleware");
 const cloudinary = require("cloudinary");
 const testRoutes = require("./routes/test.routes");
 const study_materialRoutes = require("./routes/study_material.routes");
@@ -46,7 +50,12 @@ cloudinary.config({
 app.use(express.static(path.join(__dirname, "public")));
 
 mongoose
-  .connect(process.env.DATABASE_CLOUD, { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false, useUnifiedTopology: true })
+  .connect(process.env.DATABASE_CLOUD, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("DB connected"))
   .catch((err) => {
     console.log(err);
@@ -54,14 +63,28 @@ mongoose
 app.use(morgan("dev"));
 app.use(cookieParser());
 app.use(cors());
-app.use(cors({ exposedHeaders: "Authorization, X-Custom, internalApiKey,orgId" }));
+app.use(
+  cors({ exposedHeaders: "Authorization, X-Custom, internalApiKey,orgId" })
+);
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ limit: "50mb", parameterLimit: 100000, extended: true }));
+app.use(
+  bodyParser.urlencoded({
+    limit: "50mb",
+    parameterLimit: 100000,
+    extended: true,
+  })
+);
 app.use(upload());
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.setHeader("Access-Control-Allow-Methods", "POST, GET, PATCH, PUT, DELETE, OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "POST, GET, PATCH, PUT, DELETE, OPTIONS"
+  );
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
   res.setHeader("Access-Control-Allow-Credentials", true);
   next();
@@ -70,6 +93,38 @@ cors;
 const serverRoot = "http://localhost:" + (process.env.PORT || 3000);
 
 app.set("view engine", "ejs");
+
+app.get("/Home", (req, res) => {
+  res.render("Home", { qs: req.query });
+});
+
+app.get("/About-Us", (req, res) => {
+  res.render("About-Us", { qs: req.query });
+});
+
+app.get("/Gallery", (req, res) => {
+  res.render("Gallery", { qs: req.query });
+});
+
+app.get("/Videos", (req, res) => {
+  res.render("Videos", { qs: req.query });
+});
+
+app.get("/Blog", (req, res) => {
+  res.render("Blog", { qs: req.query });
+});
+
+app.get("/Contact", (req, res) => {
+  res.render("Contact", { qs: req.query });
+});
+
+app.get("/Explore-Experience", (req, res) => {
+  res.render("Explore-Experience", { qs: req.query });
+});
+
+app.get("/Explore-Programs", (req, res) => {
+  res.render("Explore-Programs", { qs: req.query });
+});
 
 app.get("/register", function (req, res) {
   if (req.cookies && req.cookies.token) {
@@ -129,14 +184,18 @@ app.get("/login", function (req, res) {
 app.get("/admin_login", function (req, res) {
   if (req.cookies && req.cookies.tokenAdmin) {
     const tokenAdmin = req.cookies.tokenAdmin;
-    jwt.verify(tokenAdmin, process.env.JWT_SECRET, async (err, decodedToken) => {
-      if (err) {
-        res.locals.user = null;
-        res.render("admin_login", { msg: "Session Expired" });
-      } else {
-        res.redirect("/create_batches");
+    jwt.verify(
+      tokenAdmin,
+      process.env.JWT_SECRET,
+      async (err, decodedToken) => {
+        if (err) {
+          res.locals.user = null;
+          res.render("admin_login", { msg: "Session Expired" });
+        } else {
+          res.redirect("/create_batches");
+        }
       }
-    });
+    );
   } else {
     res.render("admin_login", { msg: "ok" });
   }
@@ -180,7 +239,9 @@ app.post("/login", function (req, res) {
 app.post("/admin_login", function (req, res) {
   if (req.body && req.body.email && req.body.password) {
     axios
-      .post(serverRoot + "/api/signinAdmin", req.body, { withCredentials: true })
+      .post(serverRoot + "/api/signinAdmin", req.body, {
+        withCredentials: true,
+      })
       .then(function (response) {
         res.cookie("tokenAdmin", response.data.tokenAdmin, { expiresIn: "1d" });
         username = response.data.user.name;
@@ -196,7 +257,9 @@ app.post("/admin_login", function (req, res) {
 app.get("/create_batches", requireAuthAdmin, function (req, res) {
   console.log(req.decodedToken);
   axios
-    .get(serverRoot + "/api/branches", { params: { admin: req.decodedToken._id } })
+    .get(serverRoot + "/api/branches", {
+      params: { admin: req.decodedToken._id },
+    })
     .then(function (response) {
       res.render("create_batches", { branchData: response.data.userData });
     })
@@ -221,14 +284,26 @@ app.get("/create_batches", requireAuthAdmin, function (req, res) {
 // });
 app.get("/announcements", function (req, res) {
   axios
-    .get(serverRoot + "/api/announcement/getAnnouncementsByBranchIdForStudent/" + localStorage.getItem("batchID"))
+    .get(
+      serverRoot +
+        "/api/announcement/getAnnouncementsByBranchIdForStudent/" +
+        localStorage.getItem("batchID")
+    )
     .then(function (response1) {
       if (response1.data.status) {
         axios
-          .get(serverRoot + "/api/announcement/getAnnouncementsByBranchIdForAdmin/" + localStorage.getItem("batchID"))
+          .get(
+            serverRoot +
+              "/api/announcement/getAnnouncementsByBranchIdForAdmin/" +
+              localStorage.getItem("batchID")
+          )
           .then(function (response2) {
             if (response2.data.status) {
-              res.render("announcements", { success: false, student: response1.data.announcementData, admin: response2.data.announcementData });
+              res.render("announcements", {
+                success: false,
+                student: response1.data.announcementData,
+                admin: response2.data.announcementData,
+              });
             }
           })
           .catch(function (error) {
@@ -253,14 +328,26 @@ app.post("/admin_announcement", function (req, res) {
     .then(function (response) {
       if (response.data.status) {
         axios
-          .get(serverRoot + "/api/announcement/getAnnouncementsByBranchIdForStudent/" + localStorage.getItem("batchID"))
+          .get(
+            serverRoot +
+              "/api/announcement/getAnnouncementsByBranchIdForStudent/" +
+              localStorage.getItem("batchID")
+          )
           .then(function (response1) {
             if (response1.data.status) {
               axios
-                .get(serverRoot + "/api/announcement/getAnnouncementsByBranchIdForAdmin/" + localStorage.getItem("batchID"))
+                .get(
+                  serverRoot +
+                    "/api/announcement/getAnnouncementsByBranchIdForAdmin/" +
+                    localStorage.getItem("batchID")
+                )
                 .then(function (response2) {
                   if (response2.data.status) {
-                    res.render("announcements", { success: true, student: response1.data.announcementData, admin: response2.data.announcementData });
+                    res.render("announcements", {
+                      success: true,
+                      student: response1.data.announcementData,
+                      admin: response2.data.announcementData,
+                    });
                   }
                 })
                 .catch(function (error) {
@@ -278,15 +365,14 @@ app.post("/admin_announcement", function (req, res) {
     });
 });
 app.post("/student_announcement", function (req, res) {
-  
   var obj = {
     branchId: localStorage.getItem("batchID"),
     admin_announcement: false,
     student_announcement: true,
     announcement: req.body.student_announcement,
   };
-  if(req.body.isClassAnnouncement==='on'){
-    obj.isClassAnnouncement=true;
+  if (req.body.isClassAnnouncement === "on") {
+    obj.isClassAnnouncement = true;
     obj.scheduledTime = new Date(req.body.classDate + " " + req.body.classTime);
     obj.link = req.body.link;
   }
@@ -298,11 +384,19 @@ app.post("/student_announcement", function (req, res) {
     .then(function (response) {
       if (response.data.status) {
         axios
-          .get(serverRoot + "/api/announcement/getAnnouncementsByBranchIdForStudent/" + localStorage.getItem("batchID"))
+          .get(
+            serverRoot +
+              "/api/announcement/getAnnouncementsByBranchIdForStudent/" +
+              localStorage.getItem("batchID")
+          )
           .then(function (response1) {
             if (response1.data.status) {
               axios
-                .get(serverRoot + "/api/announcement/getAnnouncementsByBranchIdForAdmin/" + localStorage.getItem("batchID"))
+                .get(
+                  serverRoot +
+                    "/api/announcement/getAnnouncementsByBranchIdForAdmin/" +
+                    localStorage.getItem("batchID")
+                )
                 .then(function (response2) {
                   if (response2.data.status) {
                     res.redirect("/announcements");
@@ -327,34 +421,50 @@ app.post("/student_announcement", function (req, res) {
     })*/
 app.get("/about_you", function (req, res) {
   axios
-    .get(serverRoot + "/api/announcement/getAnnouncementsForAStudentFromAllBranches/", { params: { id: localStorage.getItem("userId") } })
+    .get(
+      serverRoot +
+        "/api/announcement/getAnnouncementsForAStudentFromAllBranches/",
+      { params: { id: localStorage.getItem("userId") } }
+    )
     .then((resp1) => {
-      axios.get(serverRoot + "/api/attendance/getAllRecords/" + localStorage.getItem("userId")).then((attendanceRecord) => {
-        axios.get(serverRoot + "/api/getAllBranchesForAStudent/" + localStorage.getItem("userId")).then(function (response) {
-          if (response.data.result > 0) {
-            res.render("about_you", {
-              user_id: localStorage.getItem("userId"),
-              branchData: response.data.result,
-              name: localStorage.getItem("name"),
-              announcement: resp1.data.announcementData,
-              clockingId: localStorage.getItem("attendClassId"),
-              attendanceRecord: attendanceRecord.data,
+      axios
+        .get(
+          serverRoot +
+            "/api/attendance/getAllRecords/" +
+            localStorage.getItem("userId")
+        )
+        .then((attendanceRecord) => {
+          axios
+            .get(
+              serverRoot +
+                "/api/getAllBranchesForAStudent/" +
+                localStorage.getItem("userId")
+            )
+            .then(function (response) {
+              if (response.data.result > 0) {
+                res.render("about_you", {
+                  user_id: localStorage.getItem("userId"),
+                  branchData: response.data.result,
+                  name: localStorage.getItem("name"),
+                  announcement: resp1.data.announcementData,
+                  clockingId: localStorage.getItem("attendClassId"),
+                  attendanceRecord: attendanceRecord.data,
+                });
+              } else {
+                res.render("about_you", {
+                  user_id: localStorage.getItem("userId"),
+                  branchData: response.data.result,
+                  name: localStorage.getItem("name"),
+                  parentPhoneNo: localStorage.getItem("parentPhoneNo"),
+                  email: localStorage.getItem("userEmail"),
+                  username: localStorage.getItem("name"),
+                  announcement: resp1.data.announcementData,
+                  clockingId: localStorage.getItem("attendClassId"),
+                  attendanceRecord: attendanceRecord.data,
+                });
+              }
             });
-          } else {
-            res.render("about_you", {
-              user_id: localStorage.getItem("userId"),
-              branchData: response.data.result,
-              name: localStorage.getItem("name"),
-              parentPhoneNo: localStorage.getItem("parentPhoneNo"),
-              email: localStorage.getItem("userEmail"),
-              username: localStorage.getItem("name"),
-              announcement: resp1.data.announcementData,
-              clockingId: localStorage.getItem("attendClassId"),
-              attendanceRecord: attendanceRecord.data,
-            });
-          }
         });
-      });
     })
     .catch(function (error) {
       console.log(error);
@@ -362,22 +472,36 @@ app.get("/about_you", function (req, res) {
 });
 app.get("/student_test", function (req, res) {
   axios
-    .get(serverRoot + "/api/announcement/getAnnouncementsForAStudentFromAllBranches/", { params: { id: localStorage.getItem("userId") } })
+    .get(
+      serverRoot +
+        "/api/announcement/getAnnouncementsForAStudentFromAllBranches/",
+      { params: { id: localStorage.getItem("userId") } }
+    )
     .then((resp1) => {
-      axios.get(serverRoot + "/api/test/getAlltestsForAStudent/" + localStorage.getItem("userId")).then(function (response) {
-        if (response.data.testData.length > 0) {
-          res.render("student_test", { user_id: localStorage.getItem("userId"), test: response.data.testData, name: localStorage.getItem("name") });
-        } else {
-          res.render("student_test", {
-            user_id: localStorage.getItem("userId"),
-            test: response.data.testData,
-            name: localStorage.getItem("name"),
-            username: localStorage.getItem("name"),
-            announcement: resp1.data.announcementData,
-            clockingId: localStorage.getItem("attendClassId"),
-          });
-        }
-      });
+      axios
+        .get(
+          serverRoot +
+            "/api/test/getAlltestsForAStudent/" +
+            localStorage.getItem("userId")
+        )
+        .then(function (response) {
+          if (response.data.testData.length > 0) {
+            res.render("student_test", {
+              user_id: localStorage.getItem("userId"),
+              test: response.data.testData,
+              name: localStorage.getItem("name"),
+            });
+          } else {
+            res.render("student_test", {
+              user_id: localStorage.getItem("userId"),
+              test: response.data.testData,
+              name: localStorage.getItem("name"),
+              username: localStorage.getItem("name"),
+              announcement: resp1.data.announcementData,
+              clockingId: localStorage.getItem("attendClassId"),
+            });
+          }
+        });
     })
 
     .catch(function (error) {
@@ -396,7 +520,12 @@ app.get("/batch", function (req, res) {
       response.data.studentslist.forEach((element) => {
         selectedStudents.push(element._id);
       });
-      res.render("batch", { id: req.query.id, batchStudents: response.data.studentslist, title: response.data.branchData[0].title, branchData: response.data.branchData[0] });
+      res.render("batch", {
+        id: req.query.id,
+        batchStudents: response.data.studentslist,
+        title: response.data.branchData[0].title,
+        branchData: response.data.branchData[0],
+      });
       // res.render('students',{ userData : response.data.studentData,  userName : response.data.userData[0].name })
     })
     .catch(function (error) {
@@ -462,7 +591,9 @@ app.get("/add_students", function (req, res) {
         .get(serverRoot + "/api/getPendingRequests", { params: { branch_id } })
         .then(function (allSignups) {
           console.log(allSignups.data);
-          let data = allSignups.data.users.filter((item) => !selectedStudents.includes(item._id));
+          let data = allSignups.data.users.filter(
+            (item) => !selectedStudents.includes(item._id)
+          );
           res.render("add_students", { id: req.query.id, userData: data });
           selectedStudents = [];
         })
@@ -481,7 +612,9 @@ app.post("/add_students", function (req, res) {
   console.log(req.body.user);
 
   axios
-    .put(serverRoot + "/api/addStudentsToBranch/" + req.query.id, { students: req.body.user })
+    .put(serverRoot + "/api/addStudentsToBranch/" + req.query.id, {
+      students: req.body.user,
+    })
     .then(function (response) {
       axios
         .get(serverRoot + "/api/branchStudentsByBranchId/" + req.query.id)
@@ -489,7 +622,12 @@ app.post("/add_students", function (req, res) {
           response.data.studentslist.forEach((element) => {
             selectedStudents.push(element._id);
           });
-          res.render("batch", { id: req.query.id, batchStudents: response.data.studentslist, title: response.data.branchData[0].title, branchData: response.data.branchData[0] });
+          res.render("batch", {
+            id: req.query.id,
+            batchStudents: response.data.studentslist,
+            title: response.data.branchData[0].title,
+            branchData: response.data.branchData[0],
+          });
         })
         .catch(function (error) {
           console.log(error);
@@ -502,7 +640,11 @@ app.post("/add_students", function (req, res) {
 
 app.get("/student_dashboard", requireAuth, function (req, res) {
   axios
-    .get(serverRoot + "/api/announcement/getAnnouncementsForAStudentFromAllBranches/", { params: { id: localStorage.getItem("userId") } })
+    .get(
+      serverRoot +
+        "/api/announcement/getAnnouncementsForAStudentFromAllBranches/",
+      { params: { id: localStorage.getItem("userId") } }
+    )
     .then(function (response1) {
       axios.get(serverRoot + "/api/getAllBranches/").then(function (branches) {
         res.render("student_dashboard", {
@@ -522,7 +664,10 @@ app.get("/students", requireAuthAdmin, function (req, res) {
   axios
     .get(serverRoot + "/api/getAllSignups")
     .then(function (response) {
-      res.render("students", { userData: response.data.userData, userName: response.data.userData[0].name });
+      res.render("students", {
+        userData: response.data.userData,
+        userName: response.data.userData[0].name,
+      });
     })
     .catch(function (error) {
       console.log(error);
@@ -533,13 +678,22 @@ app.get("/student_details", requireAuthAdmin, function (req, res) {
   axios
     .get(serverRoot + "/api/getStudentsById/" + id)
     .then(function (response) {
-      axios.get(serverRoot + "/api/getAllBranchesForAStudent/" + id).then(function (branchesData) {
-        axios.get(serverRoot + "/api/attendance/getAllRecords/" + id).then((attendanceRecord) => {
-          let x = response.data.userData.name.charAt(0);
-          // console.log(response.data.userData);
-          res.render("student_details", { userData: response.data.userData, name: x, branchesData: branchesData.data.result, attendanceRecord: attendanceRecord.data });
+      axios
+        .get(serverRoot + "/api/getAllBranchesForAStudent/" + id)
+        .then(function (branchesData) {
+          axios
+            .get(serverRoot + "/api/attendance/getAllRecords/" + id)
+            .then((attendanceRecord) => {
+              let x = response.data.userData.name.charAt(0);
+              // console.log(response.data.userData);
+              res.render("student_details", {
+                userData: response.data.userData,
+                name: x,
+                branchesData: branchesData.data.result,
+                attendanceRecord: attendanceRecord.data,
+              });
+            });
         });
-      });
     })
     .catch(function (error) {
       console.log(error);
@@ -576,7 +730,9 @@ app.post("/test", function (req, res) {
               console.log(error);
             });
         } else {
-          console.log("**** something went wrong while creating tests *********");
+          console.log(
+            "**** something went wrong while creating tests *********"
+          );
         }
       })
       .catch(function (error) {
@@ -596,7 +752,9 @@ app.post("/test", function (req, res) {
               console.log(error);
             });
         } else {
-          console.log("**** something went wrong while creating tests *********");
+          console.log(
+            "**** something went wrong while creating tests *********"
+          );
         }
       })
       .catch(function (error) {
@@ -614,21 +772,38 @@ app.get("/view_test", function (req, res) {
       axios
         .get(serverRoot + "/api/test/getTestById/" + testId)
         .then(function (response1) {
-          var stdCombo = response1.data.testData[0].students.map(function (value, index) {
+          var stdCombo = response1.data.testData[0].students.map(function (
+            value,
+            index
+          ) {
             if (response1.data.testData[0].studentsName[index] != undefined) {
               return [value, response1.data.testData[0].studentsName[index]];
             } else {
               return undefined;
             }
           });
-          var bthCombo = response1.data.testData[0].branches.map(function (value, index) {
+          var bthCombo = response1.data.testData[0].branches.map(function (
+            value,
+            index
+          ) {
             return [value, response1.data.testData[0].branchesName[index]];
           });
           var addQues = true;
-          if (response1.data.testData[0].total_questions - response.data.count == 0) {
+          if (
+            response1.data.testData[0].total_questions - response.data.count ==
+            0
+          ) {
             addQues = false;
           }
-          res.render("view_test", { id: req.query.id, questionData: response.data.questionData, testData: response1.data.testData[0], stdCombo: stdCombo, bthCombo: bthCombo, count: response.data.count, addQues: addQues });
+          res.render("view_test", {
+            id: req.query.id,
+            questionData: response.data.questionData,
+            testData: response1.data.testData[0],
+            stdCombo: stdCombo,
+            bthCombo: bthCombo,
+            count: response.data.count,
+            addQues: addQues,
+          });
         })
         .catch(function (error) {
           console.log(error);
@@ -642,7 +817,12 @@ app.get("/view_test", function (req, res) {
 app.post("/view_test", function (req, res) {
   if (testId) {
     req.body.testId = testId;
-    if (req.body.answer1 || req.body.answer2 || req.body.answer3 || req.body.answer4) {
+    if (
+      req.body.answer1 ||
+      req.body.answer2 ||
+      req.body.answer3 ||
+      req.body.answer4
+    ) {
       let answer = [];
       answer.push(req.body.answer1);
       answer.push(req.body.answer2);
@@ -663,17 +843,39 @@ app.post("/view_test", function (req, res) {
               axios
                 .get(serverRoot + "/api/test/getTestById/" + testId)
                 .then(function (response1) {
-                  var stdCombo = response1.data.testData[0].students.map(function (value, index) {
-                    return [value, response1.data.testData[0].studentsName[index]];
-                  });
-                  var bthCombo = response1.data.testData[0].branches.map(function (value, index) {
-                    return [value, response1.data.testData[0].branchesName[index]];
-                  });
+                  var stdCombo = response1.data.testData[0].students.map(
+                    function (value, index) {
+                      return [
+                        value,
+                        response1.data.testData[0].studentsName[index],
+                      ];
+                    }
+                  );
+                  var bthCombo = response1.data.testData[0].branches.map(
+                    function (value, index) {
+                      return [
+                        value,
+                        response1.data.testData[0].branchesName[index],
+                      ];
+                    }
+                  );
                   var addQues = true;
-                  if (response1.data.testData[0].total_questions - response.data.count == 0) {
+                  if (
+                    response1.data.testData[0].total_questions -
+                      response.data.count ==
+                    0
+                  ) {
                     addQues = false;
                   }
-                  res.render("view_test", { id: testId, questionData: response.data.questionData, testData: response1.data.testData[0], stdCombo: stdCombo, bthCombo: bthCombo, count: response.data.count, addQues: addQues });
+                  res.render("view_test", {
+                    id: testId,
+                    questionData: response.data.questionData,
+                    testData: response1.data.testData[0],
+                    stdCombo: stdCombo,
+                    bthCombo: bthCombo,
+                    count: response.data.count,
+                    addQues: addQues,
+                  });
                 })
                 .catch(function (error) {
                   console.log(error);
@@ -683,7 +885,9 @@ app.post("/view_test", function (req, res) {
               console.log(error);
             });
         } else {
-          console.log("**** something went wrong while creating tests *********");
+          console.log(
+            "**** something went wrong while creating tests *********"
+          );
         }
       })
       .catch(function (error) {
@@ -704,9 +908,15 @@ app.get("/add_students_test", (req, res) => {
       axios
         .get(serverRoot + "/api/getAllSignups")
         .then(function (allSignups) {
-          let data = allSignups.data.userData.filter((item) => !selectedStudents.includes(item._id));
+          let data = allSignups.data.userData.filter(
+            (item) => !selectedStudents.includes(item._id)
+          );
 
-          res.render("add_students_test", { id: req.query.id, userData: data, testId: testId });
+          res.render("add_students_test", {
+            id: req.query.id,
+            userData: data,
+            testId: testId,
+          });
           selectedStudents = [];
         })
         .catch(function (error) {
@@ -734,7 +944,10 @@ app.post("/add_students_test", (req, res) => {
     name.push(arr[0][1]);
   }
   axios
-    .put(serverRoot + "/api/test/addStudentsToTest/" + testId, { students: stdId, studentsName: name })
+    .put(serverRoot + "/api/test/addStudentsToTest/" + testId, {
+      students: stdId,
+      studentsName: name,
+    })
     .then(function (response) {
       if (response) {
         axios
@@ -743,17 +956,39 @@ app.post("/add_students_test", (req, res) => {
             axios
               .get(serverRoot + "/api/test/getTestById/" + testId)
               .then(function (response1) {
-                var stdCombo = response1.data.testData[0].students.map(function (value, index) {
-                  return [value, response1.data.testData[0].studentsName[index]];
-                });
-                var bthCombo = response1.data.testData[0].branches.map(function (value, index) {
-                  return [value, response1.data.testData[0].branchesName[index]];
-                });
+                var stdCombo = response1.data.testData[0].students.map(
+                  function (value, index) {
+                    return [
+                      value,
+                      response1.data.testData[0].studentsName[index],
+                    ];
+                  }
+                );
+                var bthCombo = response1.data.testData[0].branches.map(
+                  function (value, index) {
+                    return [
+                      value,
+                      response1.data.testData[0].branchesName[index],
+                    ];
+                  }
+                );
                 var addQues = true;
-                if (response1.data.testData[0].total_questions - response2.data.count == 0) {
+                if (
+                  response1.data.testData[0].total_questions -
+                    response2.data.count ==
+                  0
+                ) {
                   addQues = false;
                 }
-                res.render("view_test", { id: req.query.id, questionData: response2.data.questionData, testData: response1.data.testData[0], stdCombo: stdCombo, bthCombo: bthCombo, count: response2.data.count, addQues: addQues });
+                res.render("view_test", {
+                  id: req.query.id,
+                  questionData: response2.data.questionData,
+                  testData: response1.data.testData[0],
+                  stdCombo: stdCombo,
+                  bthCombo: bthCombo,
+                  count: response2.data.count,
+                  addQues: addQues,
+                });
               })
               .catch(function (error) {
                 console.log(error);
@@ -781,8 +1016,14 @@ app.get("/add_batches_test", (req, res) => {
       axios
         .get(serverRoot + "/api/branches")
         .then(function (branches) {
-          let data = branches.data.userData.filter((item) => !selectedBatches.includes(item._id));
-          res.render("add_batches_test", { id: req.query.id, branchData: data, testId: testId });
+          let data = branches.data.userData.filter(
+            (item) => !selectedBatches.includes(item._id)
+          );
+          res.render("add_batches_test", {
+            id: req.query.id,
+            branchData: data,
+            testId: testId,
+          });
           selectedBatches = [];
         })
         .catch(function (error) {
@@ -810,7 +1051,10 @@ app.post("/add_batches_test", (req, res) => {
     name.push(arr[0][1]);
   }
   axios
-    .put(serverRoot + "/api/test/addBranchesToTest/" + testId, { branches: stdId, branchesName: name })
+    .put(serverRoot + "/api/test/addBranchesToTest/" + testId, {
+      branches: stdId,
+      branchesName: name,
+    })
     .then(function (response) {
       if (response) {
         axios
@@ -819,17 +1063,39 @@ app.post("/add_batches_test", (req, res) => {
             axios
               .get(serverRoot + "/api/test/getTestById/" + testId)
               .then(function (response1) {
-                var stdCombo = response1.data.testData[0].students.map(function (value, index) {
-                  return [value, response1.data.testData[0].studentsName[index]];
-                });
-                var bthCombo = response1.data.testData[0].branches.map(function (value, index) {
-                  return [value, response1.data.testData[0].branchesName[index]];
-                });
+                var stdCombo = response1.data.testData[0].students.map(
+                  function (value, index) {
+                    return [
+                      value,
+                      response1.data.testData[0].studentsName[index],
+                    ];
+                  }
+                );
+                var bthCombo = response1.data.testData[0].branches.map(
+                  function (value, index) {
+                    return [
+                      value,
+                      response1.data.testData[0].branchesName[index],
+                    ];
+                  }
+                );
                 let addQues = true;
-                if (response1.data.testData[0].total_questions - response2.data.count == 0) {
+                if (
+                  response1.data.testData[0].total_questions -
+                    response2.data.count ==
+                  0
+                ) {
                   addQues = false;
                 }
-                res.render("view_test", { id: req.query.id, questionData: response2.data.questionData, testData: response1.data.testData[0], stdCombo: stdCombo, bthCombo: bthCombo, count: response2.data.count, addQues: addQues });
+                res.render("view_test", {
+                  id: req.query.id,
+                  questionData: response2.data.questionData,
+                  testData: response1.data.testData[0],
+                  stdCombo: stdCombo,
+                  bthCombo: bthCombo,
+                  count: response2.data.count,
+                  addQues: addQues,
+                });
               })
               .catch(function (error) {
                 console.log(error);
@@ -854,10 +1120,15 @@ app.get("/student_testview", function (req, res) {
       // we can even get all query values from response also
       let totalMarks = parseInt(req.query.points * response.data.count);
       axios
-        .get(serverRoot + "/api/test/getAlltestsForAStudent/" + localStorage.getItem("userId"))
+        .get(
+          serverRoot +
+            "/api/test/getAlltestsForAStudent/" +
+            localStorage.getItem("userId")
+        )
         .then(function (response1) {
           var test = response1.data.testData.map((value) => {
-            if (value.doneTest && value.doneTest.testIds == req.query.id) return value.doneTest.studentAnswers;
+            if (value.doneTest && value.doneTest.testIds == req.query.id)
+              return value.doneTest.studentAnswers;
           });
           arr = test.filter((obj) => obj);
           arr = arr[0];
@@ -872,41 +1143,43 @@ app.get("/student_testview", function (req, res) {
           for (var i = 0; i < arr.length; i++) {
             if (questionans[i].answer == arr[i].answer) right += 1;
           }
-          axios.get(serverRoot + "/api/test/getTestRankByTestId/" + _id).then(function (response3) {
-            if (response.data.questionData.length > 0) {
-              res.render("student_testview", {
-                user_id: localStorage.getItem("userId"),
-                right: right,
-                rank: response3.data.highestScore,
-                user_id: localStorage.getItem("userId"),
-                attemp: attempt,
-                unattemp: unattempt,
-                answers: arr,
-                questions: questionans,
-                scoredMarks: req.query.score,
-                totalMarks: totalMarks,
-                points: req.query.points,
-                title: req.query.title,
-                name: localStorage.getItem("name"),
-              });
-            } else {
-              res.render("student_testview", {
-                user_id: localStorage.getItem("userId"),
-                right: right,
-                rank: response3.data.highestScore,
-                user_id: localStorage.getItem("userId"),
-                attemp: attempt,
-                unattemp: unattempt,
-                answers: arr,
-                questions: questionans,
-                scoredMarks: req.query.score,
-                totalMarks: totalMarks,
-                points: req.query.points,
-                title: req.query.title,
-                name: localStorage.getItem("name"),
-              });
-            }
-          });
+          axios
+            .get(serverRoot + "/api/test/getTestRankByTestId/" + _id)
+            .then(function (response3) {
+              if (response.data.questionData.length > 0) {
+                res.render("student_testview", {
+                  user_id: localStorage.getItem("userId"),
+                  right: right,
+                  rank: response3.data.highestScore,
+                  user_id: localStorage.getItem("userId"),
+                  attemp: attempt,
+                  unattemp: unattempt,
+                  answers: arr,
+                  questions: questionans,
+                  scoredMarks: req.query.score,
+                  totalMarks: totalMarks,
+                  points: req.query.points,
+                  title: req.query.title,
+                  name: localStorage.getItem("name"),
+                });
+              } else {
+                res.render("student_testview", {
+                  user_id: localStorage.getItem("userId"),
+                  right: right,
+                  rank: response3.data.highestScore,
+                  user_id: localStorage.getItem("userId"),
+                  attemp: attempt,
+                  unattemp: unattempt,
+                  answers: arr,
+                  questions: questionans,
+                  scoredMarks: req.query.score,
+                  totalMarks: totalMarks,
+                  points: req.query.points,
+                  title: req.query.title,
+                  name: localStorage.getItem("name"),
+                });
+              }
+            });
         })
         .catch(function (error1) {
           console.log(error);
@@ -964,12 +1237,25 @@ app.get("/student_takequiz", function (req, res) {
 
 app.post("/student_takequiz", function (req, res) {
   axios
-    .get(serverRoot + "/api/test/getAlltestsForAStudent/" + localStorage.getItem("userId"))
+    .get(
+      serverRoot +
+        "/api/test/getAlltestsForAStudent/" +
+        localStorage.getItem("userId")
+    )
     .then(function (response) {
       if (response.data.testData.length > 0) {
-        res.render("student_takequiz", { count: response.data.testDetails[0].duration, questions: response.data.questionData, testDetails: response.data.testDetails, name: localStorage.getItem("name") });
+        res.render("student_takequiz", {
+          count: response.data.testDetails[0].duration,
+          questions: response.data.questionData,
+          testDetails: response.data.testDetails,
+          name: localStorage.getItem("name"),
+        });
       } else {
-        res.render("student_test", { user_id: localStorage.getItem("userId"), test: response.data.testData, name: localStorage.getItem("name") });
+        res.render("student_test", {
+          user_id: localStorage.getItem("userId"),
+          test: response.data.testData,
+          name: localStorage.getItem("name"),
+        });
       }
     })
     .catch(function (error) {
@@ -979,7 +1265,10 @@ app.post("/student_takequiz", function (req, res) {
 
 app.post("/submit_quiz", function (req, res) {
   var myData = Object.keys(req.body).map((key) => {
-    return { _id: key.split("?")[1], answer: req.body[key].trim().toLowerCase().split(/\s/).join("") };
+    return {
+      _id: key.split("?")[1],
+      answer: req.body[key].trim().toLowerCase().split(/\s/).join(""),
+    };
   });
   var output = [];
   //Iterating each element of the myData
@@ -994,7 +1283,8 @@ app.post("/submit_quiz", function (req, res) {
     if (!temp) output.push(o);
   });
   for (var i = 0; i < output.length; i++) {
-    if (output[i].answer[0] == ",") output[i].answer = output[i].answer.substring(1);
+    if (output[i].answer[0] == ",")
+      output[i].answer = output[i].answer.substring(1);
   }
 
   axios
@@ -1033,16 +1323,33 @@ app.post("/submit_quiz", function (req, res) {
           ],
         };
         axios
-          .put(serverRoot + "/api/editTestsOfStudent/" + localStorage.getItem("userId"), objUpdate)
+          .put(
+            serverRoot +
+              "/api/editTestsOfStudent/" +
+              localStorage.getItem("userId"),
+            objUpdate
+          )
           .then(function (stdresponse) {
             if (stdresponse) {
               axios
-                .get(serverRoot + "/api/test/getAlltestsForAStudent/" + localStorage.getItem("userId"))
+                .get(
+                  serverRoot +
+                    "/api/test/getAlltestsForAStudent/" +
+                    localStorage.getItem("userId")
+                )
                 .then(function (response) {
                   if (response.data.testData.length > 0) {
-                    res.render("student_test", { user_id: localStorage.getItem("userId"), test: response.data.testData, name: localStorage.getItem("name") });
+                    res.render("student_test", {
+                      user_id: localStorage.getItem("userId"),
+                      test: response.data.testData,
+                      name: localStorage.getItem("name"),
+                    });
                   } else {
-                    res.render("student_test", { user_id: localStorage.getItem("userId"), test: response.data.testData, name: localStorage.getItem("name") });
+                    res.render("student_test", {
+                      user_id: localStorage.getItem("userId"),
+                      test: response.data.testData,
+                      name: localStorage.getItem("name"),
+                    });
                   }
                 })
                 .catch(function (error) {
@@ -1066,12 +1373,20 @@ app.post("/submit_quiz", function (req, res) {
 
 app.get("/admin_material", function (req, res) {
   axios
-    .get(serverRoot + "/api/studyMaterial/getStudyMaterialsByBranchId/" + localStorage.getItem("batchID"))
+    .get(
+      serverRoot +
+        "/api/studyMaterial/getStudyMaterialsByBranchId/" +
+        localStorage.getItem("batchID")
+    )
     .then(function (response) {
       if (response.data.study_materialData.length > 0) {
-        res.render("admin_material", { study_materialData: response.data.study_materialData });
+        res.render("admin_material", {
+          study_materialData: response.data.study_materialData,
+        });
       } else {
-        res.render("admin_material", { study_materialData: response.data.study_materialData });
+        res.render("admin_material", {
+          study_materialData: response.data.study_materialData,
+        });
       }
     })
     .catch(function (error) {
@@ -1104,11 +1419,18 @@ app.post("/admin_material", function (req, res) {
             pdfSize: result.bytes,
             fileUrl: result.secure_url,
           };
-          axios.post(serverRoot + "/api/studyMaterial/createStudyMaterial/" + localStorage.getItem("batchID"), obj).then((resp) => {
-            if (resp.status) {
-              res.redirect("/admin_material");
-            }
-          });
+          axios
+            .post(
+              serverRoot +
+                "/api/studyMaterial/createStudyMaterial/" +
+                localStorage.getItem("batchID"),
+              obj
+            )
+            .then((resp) => {
+              if (resp.status) {
+                res.redirect("/admin_material");
+              }
+            });
         }
       }
     );
@@ -1151,7 +1473,11 @@ app.get("/admin_attendance", function (req, res) {
 });
 app.get("/admin_video", function (req, res) {
   axios
-    .get(serverRoot + "/api/video/getVideoLinksByBranchId/" + localStorage.getItem("batchID"))
+    .get(
+      serverRoot +
+        "/api/video/getVideoLinksByBranchId/" +
+        localStorage.getItem("batchID")
+    )
     .then(function (videos) {
       res.render("admin_video", { videoData: videos.data.videoData });
     })
@@ -1168,7 +1494,11 @@ app.post("/admin_video", function (req, res) {
     .post(serverRoot + "/api/video/createVideoLink", obj)
     .then(function (videosCreate) {
       axios
-        .get(serverRoot + "/api/video/getVideoLinksByBranchId/" + localStorage.getItem("batchID"))
+        .get(
+          serverRoot +
+            "/api/video/getVideoLinksByBranchId/" +
+            localStorage.getItem("batchID")
+        )
         .then(function (videos) {
           res.render("admin_video", { videoData: videos.data.videoData });
         })
@@ -1182,12 +1512,20 @@ app.post("/admin_video", function (req, res) {
 });
 app.get("/admin_assignment", function (req, res) {
   axios
-    .get(serverRoot + "/api/assignment/getAssignmentsByBranchId/" + localStorage.getItem("batchID"))
+    .get(
+      serverRoot +
+        "/api/assignment/getAssignmentsByBranchId/" +
+        localStorage.getItem("batchID")
+    )
     .then(function (response) {
       if (response.data.assignmentData.length > 0) {
-        res.render("admin_assignment", { assignment_Data: response.data.assignmentData });
+        res.render("admin_assignment", {
+          assignment_Data: response.data.assignmentData,
+        });
       } else {
-        res.render("admin_assignment", { assignment_Data: response.data.assignmentData });
+        res.render("admin_assignment", {
+          assignment_Data: response.data.assignmentData,
+        });
       }
     })
     .catch(function (error) {
@@ -1222,11 +1560,18 @@ app.post("/admin_assignment", function (req, res) {
             pdfSize: result.bytes,
             assignmentUrl: result.secure_url,
           };
-          axios.post(serverRoot + "/api/assignment/createAssignment/" + localStorage.getItem("batchID"), obj).then((resp) => {
-            if (resp.status) {
-              res.redirect("/admin_assignment");
-            }
-          });
+          axios
+            .post(
+              serverRoot +
+                "/api/assignment/createAssignment/" +
+                localStorage.getItem("batchID"),
+              obj
+            )
+            .then((resp) => {
+              if (resp.status) {
+                res.redirect("/admin_assignment");
+              }
+            });
         }
       }
     );
@@ -1258,11 +1603,18 @@ app.post("/student_assignment", function (req, res) {
             pdfSize: result.bytes,
             url: result.secure_url,
           };
-          axios.post(serverRoot + "/api/assignment/submitStudentAssignment/" + localStorage.getItem("userId"), obj).then((resp) => {
-            if (resp.status) {
-              res.redirect("/student_assignment");
-            }
-          });
+          axios
+            .post(
+              serverRoot +
+                "/api/assignment/submitStudentAssignment/" +
+                localStorage.getItem("userId"),
+              obj
+            )
+            .then((resp) => {
+              if (resp.status) {
+                res.redirect("/student_assignment");
+              }
+            });
         }
       }
     );
@@ -1312,9 +1664,13 @@ app.get("/getpdf", function (req, res) {
       .get(serverRoot + "/api/assignment/getPDFbyAssignmentId/" + req.query.id)
       .then(function (response) {
         if (response.data.assignmentData.length > 0) {
-          res.render("get_pdf", { result: response.data.assignmentData[0].assignment });
+          res.render("get_pdf", {
+            result: response.data.assignmentData[0].assignment,
+          });
         } else {
-          res.render("get_pdf", { result: response.data.assignmentData[0].assignment });
+          res.render("get_pdf", {
+            result: response.data.assignmentData[0].assignment,
+          });
         }
       })
       .catch(function (error) {
@@ -1322,12 +1678,20 @@ app.get("/getpdf", function (req, res) {
       });
   } else if (req.query.studyMaterial == "true") {
     axios
-      .get(serverRoot + "/api/studyMaterial/getPDFbystudyMaterialId/" + req.query.id)
+      .get(
+        serverRoot +
+          "/api/studyMaterial/getPDFbystudyMaterialId/" +
+          req.query.id
+      )
       .then(function (response) {
         if (response.data.study_material.length > 0) {
-          res.render("get_pdf", { result: response.data.study_material[0].study_material });
+          res.render("get_pdf", {
+            result: response.data.study_material[0].study_material,
+          });
         } else {
-          res.render("get_pdf", { result: response.data.study_material[0].study_material });
+          res.render("get_pdf", {
+            result: response.data.study_material[0].study_material,
+          });
         }
       })
       .catch(function (error) {
@@ -1337,7 +1701,11 @@ app.get("/getpdf", function (req, res) {
 });
 app.get("/add_students_mail", (req, res) => {
   axios
-    .get(serverRoot + "/api/branchStudentsByBranchId/" + localStorage.getItem("batchID"))
+    .get(
+      serverRoot +
+        "/api/branchStudentsByBranchId/" +
+        localStorage.getItem("batchID")
+    )
     .then(function (response) {
       res.render("add_students_mail", { userData: response.data.studentslist });
     })
@@ -1358,13 +1726,13 @@ app.get("/add_batches_mail", (req, res) => {
 var names = [];
 var emailIds = [];
 app.post("/add_students_mail", (req, res) => {
-  if(Array.isArray(req.vehicle1)){
+  if (Array.isArray(req.vehicle1)) {
     req.body.vehicle1.forEach((element) => {
       var [before, after] = element.split("|");
       names.push(before);
       emailIds.push(after);
     });
-  }else{
+  } else {
     var [before, after] = req.body.vehicle1.split("|");
     names.push(before);
     emailIds.push(after);
@@ -1405,17 +1773,27 @@ app.post("/admin_mail", (req, res) => {
 
 app.get("/student_material", (req, res) => {
   axios
-    .get(serverRoot + "/api/announcement/getAnnouncementsForAStudentFromAllBranches/", { params: { id: localStorage.getItem("userId") } })
+    .get(
+      serverRoot +
+        "/api/announcement/getAnnouncementsForAStudentFromAllBranches/",
+      { params: { id: localStorage.getItem("userId") } }
+    )
     .then((resp1) => {
-      axios.get(serverRoot + "/api/studyMaterial/getStudyMaterialsForAStudentFromAllBranches/" + localStorage.getItem("userId")).then(function (response) {
-        res.render("student_material", {
-          study_materialData: response.data.study_materialData,
-          user_id: localStorage.getItem("userId"),
-          announcement: resp1.data.announcementData,
-          username: localStorage.getItem("name"),
-          clockingId: localStorage.getItem("attendClassId"),
+      axios
+        .get(
+          serverRoot +
+            "/api/studyMaterial/getStudyMaterialsForAStudentFromAllBranches/" +
+            localStorage.getItem("userId")
+        )
+        .then(function (response) {
+          res.render("student_material", {
+            study_materialData: response.data.study_materialData,
+            user_id: localStorage.getItem("userId"),
+            announcement: resp1.data.announcementData,
+            username: localStorage.getItem("name"),
+            clockingId: localStorage.getItem("attendClassId"),
+          });
         });
-      });
     })
 
     .catch(function (error) {
@@ -1425,16 +1803,32 @@ app.get("/student_material", (req, res) => {
 
 app.get("/student_videos", (req, res) => {
   axios
-    .get(serverRoot + "/api/announcement/getAnnouncementsForAStudentFromAllBranches/", { params: { id: localStorage.getItem("userId") } })
+    .get(
+      serverRoot +
+        "/api/announcement/getAnnouncementsForAStudentFromAllBranches/",
+      { params: { id: localStorage.getItem("userId") } }
+    )
     .then((response1) => {
-      axios.get(serverRoot + "/api/video/getVideosForAStudentFromAllBranches/" + localStorage.getItem("userId")).then(function (response) {
-        var updatevideos = response.data.videoData.map((value) => {
-          var newurl = value.videoURL.replace("watch?v=", "embed/");
-          value.videoURL = newurl;
-          return value;
+      axios
+        .get(
+          serverRoot +
+            "/api/video/getVideosForAStudentFromAllBranches/" +
+            localStorage.getItem("userId")
+        )
+        .then(function (response) {
+          var updatevideos = response.data.videoData.map((value) => {
+            var newurl = value.videoURL.replace("watch?v=", "embed/");
+            value.videoURL = newurl;
+            return value;
+          });
+          res.render("student_videos", {
+            user_id: req.query.id,
+            videos: updatevideos,
+            announcement: response1.data.announcementData,
+            username: localStorage.getItem("name"),
+            clockingId: localStorage.getItem("attendClassId"),
+          });
         });
-        res.render("student_videos", { user_id: req.query.id, videos: updatevideos, announcement: response1.data.announcementData,username: localStorage.getItem("name"), clockingId: localStorage.getItem("attendClassId"), });
-      });
     })
     .catch(function (error) {
       console.log(error);
@@ -1442,29 +1836,53 @@ app.get("/student_videos", (req, res) => {
 });
 app.get("/student_classes", (req, res) => {
   axios
-  .get(serverRoot + "/api/announcement/getAnnouncementsForAStudentFromAllBranches/", { params: { id: localStorage.getItem("userId") } })
-  .then((response1) => {
-    res.render("student_classes", { user_id: localStorage.getItem("userId"), announcement: response1.data.announcementData,username: localStorage.getItem("name"), clockingId: localStorage.getItem("attendClassId"), });
-
-  })
+    .get(
+      serverRoot +
+        "/api/announcement/getAnnouncementsForAStudentFromAllBranches/",
+      { params: { id: localStorage.getItem("userId") } }
+    )
+    .then((response1) => {
+      res.render("student_classes", {
+        user_id: localStorage.getItem("userId"),
+        announcement: response1.data.announcementData,
+        username: localStorage.getItem("name"),
+        clockingId: localStorage.getItem("attendClassId"),
+      });
+    });
 });
 
 app.get("/student_assignment", (req, res) => {
   axios
-    .get(serverRoot + "/api/announcement/getAnnouncementsForAStudentFromAllBranches/", { params: { id: localStorage.getItem("userId")}})
+    .get(
+      serverRoot +
+        "/api/announcement/getAnnouncementsForAStudentFromAllBranches/",
+      { params: { id: localStorage.getItem("userId") } }
+    )
     .then((resp1) => {
-      axios.get(serverRoot + "/api/assignment/submitStudentAssignment/" + localStorage.getItem("userId")).then((resp2) => {
-        axios.get(serverRoot + "/api/assignment/getAssignmentsForAStudentFromAllBranches/" + localStorage.getItem("userId")).then(function (response) {
-          res.render("student_assignment", {
-            user_id: localStorage.getItem("userId"),
-            assignment_Data: response.data.assignmentData,
-            username: localStorage.getItem("name"),
-            announcement: resp1.data.announcementData,
-            clockingId: localStorage.getItem("attendClassId"),
-            submittedAssignments: resp2.data,
-          });
+      axios
+        .get(
+          serverRoot +
+            "/api/assignment/submitStudentAssignment/" +
+            localStorage.getItem("userId")
+        )
+        .then((resp2) => {
+          axios
+            .get(
+              serverRoot +
+                "/api/assignment/getAssignmentsForAStudentFromAllBranches/" +
+                localStorage.getItem("userId")
+            )
+            .then(function (response) {
+              res.render("student_assignment", {
+                user_id: localStorage.getItem("userId"),
+                assignment_Data: response.data.assignmentData,
+                username: localStorage.getItem("name"),
+                announcement: resp1.data.announcementData,
+                clockingId: localStorage.getItem("attendClassId"),
+                submittedAssignments: resp2.data,
+              });
+            });
         });
-      });
     })
 
     .catch(function (error) {
@@ -1473,15 +1891,17 @@ app.get("/student_assignment", (req, res) => {
 });
 app.post("/markAttendace", requireAuth, (req, res) => {
   req.body.user = req.decodedToken._id;
-  axios.post(serverRoot + "/api/attendance/markAttendance", req.body).then((response) => {
-    console.log(response.data.data);
-    if (response.data.ended) {
-      localStorage.setItem("attendClassId", "");
-    } else {
-      localStorage.setItem("attendClassId", response.data.data._id);
-    }
-    res.redirect("/student_dashboard");
-  });
+  axios
+    .post(serverRoot + "/api/attendance/markAttendance", req.body)
+    .then((response) => {
+      console.log(response.data.data);
+      if (response.data.ended) {
+        localStorage.setItem("attendClassId", "");
+      } else {
+        localStorage.setItem("attendClassId", response.data.data._id);
+      }
+      res.redirect("/student_dashboard");
+    });
 });
 if (process.env.NODE_ENV === "development") {
   app.use(cors({ origin: `${process.env.CLIENT_URL}` }));
