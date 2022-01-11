@@ -441,6 +441,21 @@ app.get("/about_you", function (req, res) {
                 localStorage.getItem("userId")
             )
             .then(function (response) {
+
+            /*Update name api */
+              axios
+              .get(
+                serverRoot +
+                  "/about_you/" +
+                  localStorage.getItem("userId")
+              )
+              .then(response1=>{
+                if(response1 === "Name Updated Successfully!"){
+                  
+                }
+              })
+              // end
+
               if (response.data.result > 0) {
                 res.render("about_you", {
                   user_id: localStorage.getItem("userId"),

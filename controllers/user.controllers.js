@@ -16,38 +16,29 @@ exports.read = (req, res) => {
   });
 };
 
-
-// exports.updateName = (req, res) => {
-//     const {name}= req.body;
-//     User.findById(req.query.id)
-//     .then(response => {
-//         if (response.length == 0) {
-//             res.status(200).json({ message: "Enter the Name"})
-
-//         } else {
-//             const updatedName = new User({ name:name});
-//             updatedName.save().then(response => {
-//                     res.status(200).json({ message: "Name Updated successfully!" })
-//                 })
-//                 .catch(err => {
-//                     res.status(500).json({ error: err })
-//                 })
-//         }
-//     })
-//     .catch(err => {
-//         res.status(500).json({ error: err })
-//     })
-//   };
+/*Update name function */
+exports.updateName = (req, res) => {
+    const {name}= req.body;
+    const {id}=req.params;
+    User.findById(id)
+    .then(response => {
+        if (response.length > 0) {
+            const updatedName = new User({ name:name});
+            updatedName.save()
+            .then(response => {
+                    return res.status(200).json({ message: "Name Updated Successfully!",response });
+            })
+            .catch(err => {
+                return    res.status(500).json({ error: err })
+            })
+           
+        }
+        else {
+            return res.status(200).json({ message: "Name cannot be empty!"})
+        }
+    })
+    .catch(err => {
+        res.status(500).json({ error: err })
+    })
+};
   
-
-  exports.editNameOfStudent = (req, res) => {
-    User.updateOne({ _id: req.params.id }, { $push: { name: { $each: req.body.name } } }, (err, user) => {
-      if (response.length == 0) {
-        return res.status(200).json({ message: "Enter the Name"});
-      }
-      return res.json({
-        message: "Name edited successfully.!",
-        userData: user,
-      });
-    });
-  };
