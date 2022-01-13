@@ -144,7 +144,7 @@ body {
                     .grid-container {
                       display: grid;
                       grid-template-columns: auto auto 300px auto auto;
-                      background-color: ;
+                      /* background-color: ; */
                       padding: 10px;
                     }
 

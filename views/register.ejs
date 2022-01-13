@@ -26,7 +26,7 @@
 <body>
 
   <div class="container">
-    <form method="POST" action="/register">
+    <form autocomplete="off" method="POST" action="/register">
       <h2>Registration Form </h2>
       <input name="name" type="text" id="name" class="form-control" placeholder="Full Name" autofocus="true"
         value="<%= qs.person %>" />
@@ -42,7 +42,7 @@
       <button class="btn btn-lg btn-primary btn-block" id="submit" onclick="submit()" type="submit"
         value="submit">Register</button>
       <!-- <button class="btn btn-lg btn-primary btn-block" type="submit" value="submit" href='/login'>Register</button> -->
-      <div style="margin-bottom:10px;margin-top:15px"> already have a account? <a href='/login'>Login</a></div>
+      <div style="margin-bottom:10px;margin-top:15px"> Already have a account? <a href='/login'>Login</a></div>
 
     </form>
     <!-- <form method="POST" action="/login"  >

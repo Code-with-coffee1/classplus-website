@@ -15,6 +15,7 @@ const userRoutes = require("./routes/user.routes");
 const attendanceRoutes = require("./routes/attendance.routes");
 const mime = require("mime");
 
+
 const announcementRoutes = require("./routes/announcement.routes");
 var multer = require("multer");
 const {
@@ -141,6 +142,7 @@ app.get("/register", function (req, res) {
     res.render("register", { qs: req.query, msg: "ok" });
   }
 });
+
 app.post("/register", function (req, res) {
   if (req.body && req.body.name) {
     axios

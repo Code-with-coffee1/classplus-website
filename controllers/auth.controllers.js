@@ -7,13 +7,17 @@ const expressJwt = require("express-jwt");
 const { errorHandler } = require("../helpers/dbErrorHandler");
 const axios = require("axios");
 
+const bcrypt = require("bcrypt");
+// const { sign } = require("jsonwebtoken");
+
 var fs = require("fs");
 var tj = require("templatesjs");
 // var bodyParser = require("body-parser");
 
-exports.signup = (req, res) => {
+exports.signup = async (req, res) => {
   req.body.username = `profile-${req.body.email}`;
   req.body._class = req.body.class;
+
   User.create(req.body, function (err, userResult) {
     if (err) {
       return res.status(401).json({
@@ -33,8 +37,19 @@ exports.signup = (req, res) => {
 exports.signupAdmin = (req, res) => {
   req.body.username = `profile-${req.body.email}`;
   console.log(req.body);
-  let { username, name, email, gender, password, dateOfBirth, knownLanguages } = req.body;
-  let { qualification, institute, board, score, outOfScore, description, experience, personalAchievments, designation } = req.body;
+  let { username, name, email, gender, password, dateOfBirth, knownLanguages } =
+    req.body;
+  let {
+    qualification,
+    institute,
+    board,
+    score,
+    outOfScore,
+    description,
+    experience,
+    personalAchievments,
+    designation,
+  } = req.body;
   let { houseNumber, street, city, zipCode, state, country } = req.body;
   let newUser = {
     username,
@@ -85,17 +100,32 @@ exports.signupAdmin = (req, res) => {
 };
 
 exports.getAllSignups = (req, res) => {
-  User.find({}, { isActive: 1, _id: 1, name: 1, email: 1, password: 1, username: 1, testIds: 1, createdAt: 1, updatedAt: 1 }, { sort: { createdAt: -1 } }, (err, user) => {
-    if (err) {
-      return res.status(401).json({
-        error: errorHandler(err),
+  User.find(
+    {},
+    {
+      isActive: 1,
+      _id: 1,
+      name: 1,
+      email: 1,
+      password: 1,
+      username: 1,
+      testIds: 1,
+      createdAt: 1,
+      updatedAt: 1,
+    },
+    { sort: { createdAt: -1 } },
+    (err, user) => {
+      if (err) {
+        return res.status(401).json({
+          error: errorHandler(err),
+        });
+      }
+      return res.json({
+        message: "Signup success! Please signin",
+        userData: user,
       });
     }
-    return res.json({
-      message: "Signup success! Please signin",
-      userData: user,
-    });
-  });
+  );
 };
 
 exports.getStudentsById = (req, res) => {
@@ -113,17 +143,21 @@ exports.getStudentsById = (req, res) => {
 };
 
 exports.editTestsOfStudent = (req, res) => {
-  User.updateOne({ _id: req.params.id }, { $push: { testIds: { $each: req.body.testIds } } }, (err, user) => {
-    if (err) {
-      return res.status(401).json({
-        error: errorHandler(err),
+  User.updateOne(
+    { _id: req.params.id },
+    { $push: { testIds: { $each: req.body.testIds } } },
+    (err, user) => {
+      if (err) {
+        return res.status(401).json({
+          error: errorHandler(err),
+        });
+      }
+      return res.json({
+        message: "user edited successfully.!",
+        userData: user,
       });
     }
-    return res.json({
-      message: "user edited successfully.!",
-      userData: user,
-    });
-  });
+  );
 };
 
 exports.signin = (req, res) => {
@@ -137,14 +171,19 @@ exports.signin = (req, res) => {
       });
     }
     // authenticate
-    if (user.password !== password) {
+
+    const isMatch = bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
       return res.status(400).json({
         status: false,
         error: "Email and password do not match.",
       });
     }
     // generate a token and send to client
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
 
     const { _id, username, name, email, parentPhoneNo, _class } = user;
     return res.json({
@@ -165,14 +204,19 @@ exports.signinAdmin = (req, res) => {
       });
     }
     // authenticate
-    if (user.password !== password) {
+
+    const isMatch = bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
       return res.status(400).json({
         status: false,
         error: "Email and password do not match.",
       });
     }
     // generate a token and send to client
-    const tokenAdmin = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+    const tokenAdmin = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
 
     const { _id, username, name, email, parentPhoneNo, _class } = user;
     return res.json({

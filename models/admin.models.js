@@ -3,6 +3,8 @@ const { ObjectId } = mongoose.Schema;
 const Education = require("./education_details.models").schema;
 const Address = require("./address.models").schema;
 
+const bcrypt = require("bcryptjs");
+
 const adminSchema = new mongoose.Schema(
   {
     username: {
@@ -62,4 +64,14 @@ const adminSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+adminSchema.pre("save", async function (next) {
+  if (this.isModified("password")) {
+    // console.log(`The current password is ${this.password}`);
+    this.password = await bcrypt.hash(this.password, 10);
+    // console.log(`The current password is ${this.password}`);
+  }
+  next();
+});
+
 module.exports = mongoose.model("Admin", adminSchema);
