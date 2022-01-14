@@ -15,7 +15,6 @@ const userRoutes = require("./routes/user.routes");
 const attendanceRoutes = require("./routes/attendance.routes");
 const mime = require("mime");
 
-
 const announcementRoutes = require("./routes/announcement.routes");
 var multer = require("multer");
 const {
@@ -111,8 +110,8 @@ app.get("/Videos", (req, res) => {
   res.render("Videos", { qs: req.query });
 });
 
-app.get("/Blog", (req, res) => {
-  res.render("Blog", { qs: req.query });
+app.get("/Our-latest-News-and-Articles", (req, res) => {
+  res.render("Our-latest-News-and-Articles", { qs: req.query });
 });
 
 app.get("/Contact", (req, res) => {
