@@ -429,10 +429,13 @@
                         <div class="card">
                           <div class="card-header">
                             <h5 class="card-header-text">Basic Information</h5>
-                            <button id="edit-btn" type="button" onclick="hideInfo()"
-                              class="btn btn-primary waves-effect waves-light f-right">
-                              <img src="assets/images/pen.webp" alt="">
-                            </button>
+                            <a href="/update_user">
+                              <button id="edit-btn" type="button" onclick="hideInfo()"
+                                class="btn btn-primary waves-effect waves-light f-right">
+                                <img src="assets/images/pen.webp" alt="">
+                              </button>
+                            </a>
+
                           </div>
                           <div class="card-block">
                             <div id="view-info" class="row">
@@ -448,7 +451,7 @@
                                       <!-- <div class="action-area">
                                         
                                       </div> -->
-                                      <td style="display: none;" id="editnname"
+                                      <!-- <td style="display: none;" id="editnname"
                                         class="social-user-name b-none p-t-0 text-muted">
 
                                         <input type="text" id="fname" name="fname" value=<%=name%>>
@@ -457,7 +460,7 @@
                                         class=" social-user-name b-none p-t-0 text-muted">
                                         <button class="savebtn" onclick="saveit()">SAVE</button>
                                         <button class="cancelbtn" onclick="cancelit()">CANCEL</button>
-                                      </td>
+                                      </td> -->
 
                                     </tr>
                                     <!--<tr>
@@ -532,10 +535,13 @@
                         <div class="card">
                           <div class="card-header">
                             <h5 class="card-header-text">Your Details</h5>
-                            <button id="edit-Contact" type="button" onclick="hideDetails()"
-                              class="btn btn-primary waves-effect waves-light f-right">
-                              <img src="assets/images/pen.webp" alt="">
-                            </button>
+                            <a href="/update_user">
+                              <button id="edit-Contact" type="button" onclick="hideDetails()"
+                                class="btn btn-primary waves-effect waves-light f-right">
+                                <img src="assets/images/pen.webp" alt="">
+                              </button>
+                            </a>
+
                           </div>
                           <div class="card-block">
                             <div id="contact-info" class="row">
@@ -544,34 +550,34 @@
                                   <tr>
                                     <th class="social-label b-none p-t-0">Mobile Number</th>
                                     <td id="phonenum" class="social-user-name b-none p-t-0 text-muted">
-                                      <%=user_id%>
+                                      <%=parentPhoneNo%>
                                     </td>
-                                    <td style="display: none;" id="editphonenum"
+                                    <!-- <td style="display: none;" id="editphonenum"
                                       class="social-user-name b-none p-t-0 text-muted">
 
                                       <input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
                                         value=<%=parentPhoneNo%>>
-                                    </td>
+                                    </td> -->
                                   </tr>
                                   <tr>
                                     <th class="social-label b-none">Email Address</th>
                                     <td id="emailadd" class="social-user-name b-none text-muted">
                                       <%=email%>
                                     </td>
-                                    <td style="display: none;" id="editemailadd"
+                                    <!-- <td style="display: none;" id="editemailadd"
                                       class="social-user-name b-none p-t-0 text-muted">
 
                                       <input type="email" id="email" name="email" value=<%=email%>>
-                                    </td>
+                                    </td> -->
                                   </tr>
-                                  <br><br><br><br>
+                                  <!-- <br><br><br><br>
                                   <tr>
                                     <td style="display: none;" id="action-area-Details"
                                       class=" social-user-name b-none p-t-0 text-muted">
                                       <button class="savebtn" onclick="saveitDetails()">SAVE</button>
                                       <button class="cancelbtn" onclick="cancelitDetails()">CANCEL</button>
                                     </td>
-                                  </tr>
+                                  </tr> -->
                                   <!--<tr>
                                       <th class="social-label b-none">Twitter</th>
                                       <td class="social-user-name b-none text-muted">-</td>
@@ -1079,56 +1085,46 @@
   <script src="./assets/js/sideBarNav.js"></script>
   <script>
 
-    function hideInfo() {
-      document.getElementById("nname").style.display = "none";
-      document.getElementById("editnname").style.display = "inline";
-      document.getElementById("action-area-Info").style.display = "inline";
-    }
-    function saveit() {
-
-      let url = '/about_you/:<%=user_id%>';
-      axios.get(url)
-        .then((response) => {
+    // function hideInfo() {
+    //   document.getElementById("nname").style.display = "none";
+    //   document.getElementById("editnname").style.display = "inline";
+    //   document.getElementById("action-area-Info").style.display = "inline";
+    // }
+    // function saveit() {
 
 
-          // Code for handling the response
-        })
-        .catch((error) => {
+    //   document.getElementById("nname").style.display = "inline";
+    //   document.getElementById("editnname").style.display = "none";
+    //   document.getElementById("action-area-Info").style.display = "none";
+    // }
+    // function cancelit() {
+    //   document.getElementById("nname").style.display = "inline";
+    //   document.getElementById("editnname").style.display = "none";
+    //   document.getElementById("action-area-Info").style.display = "none";
+    // }
 
-          // Code for handling the error
-        })
-      document.getElementById("nname").style.display = "inline";
-      document.getElementById("editnname").style.display = "none";
-      document.getElementById("action-area-Info").style.display = "none";
-    }
-    function cancelit() {
-      document.getElementById("nname").style.display = "inline";
-      document.getElementById("editnname").style.display = "none";
-      document.getElementById("action-area-Info").style.display = "none";
-    }
+    // function hideDetails() {
+    //   document.getElementById("phonenum").style.display = "none";
+    //   document.getElementById("emailadd").style.display = "none";
+    //   document.getElementById("editphonenum").style.display = "inline";
+    //   document.getElementById("editemailadd").style.display = "inline";
+    //   document.getElementById("action-area-Details").style.display = "inline";
+    // }
 
-    function hideDetails() {
-      document.getElementById("phonenum").style.display = "none";
-      document.getElementById("emailadd").style.display = "none";
-      document.getElementById("editphonenum").style.display = "inline";
-      document.getElementById("editemailadd").style.display = "inline";
-      document.getElementById("action-area-Details").style.display = "inline";
-    }
-
-    function saveitDetails() {
-      document.getElementById("emailadd").style.display = "inline";
-      document.getElementById("phonenum").style.display = "inline";
-      document.getElementById("editemailadd").style.display = "none";
-      document.getElementById("editphonenum").style.display = "none";
-      document.getElementById("action-area-Details").style.display = "none";
-    }
-    function cancelitDetails() {
-      document.getElementById("emailadd").style.display = "inline";
-      document.getElementById("phonenum").style.display = "inline";
-      document.getElementById("editemailadd").style.display = "none";
-      document.getElementById("editphonenum").style.display = "none";
-      document.getElementById("action-area-Details").style.display = "none";
-    }
+    // function saveitDetails() {
+    //   document.getElementById("emailadd").style.display = "inline";
+    //   document.getElementById("phonenum").style.display = "inline";
+    //   document.getElementById("editemailadd").style.display = "none";
+    //   document.getElementById("editphonenum").style.display = "none";
+    //   document.getElementById("action-area-Details").style.display = "none";
+    // }
+    // function cancelitDetails() {
+    //   document.getElementById("emailadd").style.display = "inline";
+    //   document.getElementById("phonenum").style.display = "inline";
+    //   document.getElementById("editemailadd").style.display = "none";
+    //   document.getElementById("editphonenum").style.display = "none";
+    //   document.getElementById("action-area-Details").style.display = "none";
+    // }
 
 
     function openNav() {

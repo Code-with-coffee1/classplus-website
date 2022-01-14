@@ -15,7 +15,6 @@ const userRoutes = require("./routes/user.routes");
 const attendanceRoutes = require("./routes/attendance.routes");
 const mime = require("mime");
 
-
 const announcementRoutes = require("./routes/announcement.routes");
 var multer = require("multer");
 const {
@@ -125,6 +124,14 @@ app.get("/Explore-Experience", (req, res) => {
 
 app.get("/Explore-Programs", (req, res) => {
   res.render("Explore-Programs", { qs: req.query });
+});
+
+app.get("/update_user", (req, res) => {
+  res.render("update_user", {
+    name: localStorage.getItem("name"),
+    parentPhoneNo: localStorage.getItem("parentPhoneNo"),
+    email: localStorage.getItem("userEmail"),
+  });
 });
 
 app.get("/register", function (req, res) {
