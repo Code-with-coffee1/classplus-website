@@ -26,7 +26,7 @@
 <body>
 
     <div class="container">
-        <form autocomplete="off" method="POST" action="/users">
+        <form autocomplete="off" method="PUT" action="/about_you">
             <h2>Update Details </h2>
             <input name="name" type="text" id="name" class="form-control" placeholder="Full Name" autofocus="true"
                 value="<%= name%>" />
@@ -37,8 +37,11 @@
 
             <input name="parentPhoneNo" id="parentPhoneNo" type="text" class="form-control"
                 placeholder="Parent Phone Number" value="<%=parentPhoneNo %>" />
+
             <button class="btn btn-lg btn-success btn-block" id="submit" onclick="submit()" type="submit"
                 value="submit">Update</button>
+
+
             <br>
             <button class="btn btn-lg btn-danger btn-block" id="submit" onclick="submit()" type="submit"
                 value="submit">Cancel</button>

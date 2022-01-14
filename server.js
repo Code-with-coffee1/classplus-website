@@ -13,6 +13,7 @@ const branchRoutes = require("./routes/branch.routes");
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
 const attendanceRoutes = require("./routes/attendance.routes");
+const aboutyouRoutes = require("./routes/about_you.routes");
 const mime = require("mime");
 
 const announcementRoutes = require("./routes/announcement.routes");
@@ -128,11 +129,28 @@ app.get("/Explore-Programs", (req, res) => {
 
 app.get("/update_user", (req, res) => {
   res.render("update_user", {
+    user_id: localStorage.getItem("userId"),
     name: localStorage.getItem("name"),
     parentPhoneNo: localStorage.getItem("parentPhoneNo"),
     email: localStorage.getItem("userEmail"),
   });
 });
+
+// app.put("/about_you", function (req, res) {
+//   axios
+//     .put(serverRoot + "/api/users/" + req.query.id, req.body{
+//       // name: req.body.name,
+//       // email: req.body.email,
+//       // parentPhoneNo: req.body.parentPhoneNo,
+//     })
+//     .then(function (response) {
+//       res.render("about_you");
+//       console.log(response);
+//     })
+//     .catch(function (error) {
+//       console.log(error);
+//     });
+// });
 
 app.get("/register", function (req, res) {
   if (req.cookies && req.cookies.token) {
@@ -218,6 +236,7 @@ var LocalStorage = require("node-localstorage").LocalStorage;
 const { test } = require("./controllers/branch.controllers");
 const { count } = require("./models/user.models");
 var localStorage = new LocalStorage("./scratch");
+
 app.post("/login", function (req, res) {
   if (req.body && req.body.email && req.body.password) {
     axios
@@ -1926,6 +1945,7 @@ app.use("/api", announcementRoutes);
 app.use("/api", assignmentRoutes);
 app.use("/api", study_materialRoutes);
 app.use("/api", attendanceRoutes);
+app.use("/api", aboutyouRoutes);
 
 app.use("/", (req, res) => {
   // res
