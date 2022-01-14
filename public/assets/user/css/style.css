@@ -6873,17 +6873,20 @@ a:visited {
 */
 
 .inner-banner {
-  background-color: #011928;
+  background-color: #011928 !important;
 
-  background-repeat: no-repeat;
+  background-repeat: no-repeat !important;
 
-  background-size: cover;
+  background-size: cover !important;
+  min-height: 60vh !important;
 
-  background-attachment: fixed;
+  /* background-attachment: fixed; */
 
-  position: relative;
+  position: relative !important;
 
   background-image: url(../images/inner-bg-1-1.jpg);
+
+  /* border: 13px solid green; */
 }
 
 .inner-banner::before {
@@ -6905,6 +6908,7 @@ a:visited {
 }
 
 .inner-banner .container {
+  text-align: center;
   position: relative;
 
   display: -webkit-box;
