@@ -28,6 +28,7 @@ const study_materialRoutes = require("./routes/study_material.routes");
 const questionRoutes = require("./routes/question.routes");
 const videoRoutes = require("./routes/video.routes");
 const assignmentRoutes = require("./routes/assignment.routes");
+const aboutyouRoutes = require("./routes/about_you.routes");
 var FormData = require("form-data");
 var form = new FormData();
 var fs = require("fs");
@@ -442,20 +443,37 @@ app.get("/about_you", function (req, res) {
             )
             .then(function (response) {
 
-            /*Update name api */
-              axios
-              .get(
-                serverRoot +
-                  "/about_you/" +
-                  localStorage.getItem("userId")
-              )
-              .then(response1=>{
-                if(response1 === "Name Updated Successfully!"){
+            // /*Update name api */
+            //   axios
+            //   .get(
+            //     serverRoot +
+            //       "/about_you/" +
+            //       localStorage.getItem("userId")
+            //   )
+            //   .then(response1=>{
+            //     if(response1 === "Name Updated Successfully!"){
                   
-                }
-              })
-              // end
+            //     }
+            //   })
+            //   //end
+            //   app.post("/about_you" +localStorage.getItem("userId"),
+            //    function (req, res) {
+            //     if (req.body && req.body.name) {
+            //       axios
+            //         .post(serverRoot + "/about_you" +localStorage.getItem("userId"), req.body)
+            //         .then(function (response) {
+            //           res.redirect("/about_you");
+            //         })
+            //         .catch(function (error) {
+            //           console.log(error);
+            //         });
+            //     }
+            //   });
+            //   // end
 
+
+
+          
               if (response.data.result > 0) {
                 res.render("about_you", {
                   user_id: localStorage.getItem("userId"),
@@ -1866,6 +1884,46 @@ app.get("/student_classes", (req, res) => {
     });
 });
 
+
+
+// app.get('/about_you',function(req,res){
+//   axios.get(serverRoot+"/api/users")
+//       .then(function(response){
+//         console.log(response.data);
+//         res.render('about_you',{users:response.data});
+//       })
+//       .catch(function (error) {
+//         console.log(error);
+//       });
+
+//     });
+   
+// app.get("/about_you", function (req, res) {
+//   // axios.get(serverRoot+"/api/users")
+  // .then(function(response){
+  //   console.log(response.data);
+  //   // res.render('about_you',{users:response.data});
+  // })
+  // .catch(function (error) {
+  //   console.log(error);
+  // });
+
+  // axios.get(serverRoot+'/api/users', { params : { id : req.query.id }})
+  // .then(function(res){
+  //      res.render("about_you", { user : localStorage.getItem("res.data")})
+
+
+
+  // })
+  // .catch(function (error) {
+  //   console.log(error);
+  // });
+
+
+
+
+
+ 
 app.get("/student_assignment", (req, res) => {
   axios
     .get(
@@ -1932,6 +1990,8 @@ app.use("/api", announcementRoutes);
 app.use("/api", assignmentRoutes);
 app.use("/api", study_materialRoutes);
 app.use("/api", attendanceRoutes);
+app.use("/api", aboutyouRoutes);
+
 
 app.use("/", (req, res) => {
   // res
