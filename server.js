@@ -13,6 +13,7 @@ const branchRoutes = require("./routes/branch.routes");
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
 const attendanceRoutes = require("./routes/attendance.routes");
+const aboutyouRoutes = require("./routes/about_you.routes");
 const mime = require("mime");
 
 const announcementRoutes = require("./routes/announcement.routes");
@@ -28,7 +29,7 @@ const study_materialRoutes = require("./routes/study_material.routes");
 const questionRoutes = require("./routes/question.routes");
 const videoRoutes = require("./routes/video.routes");
 const assignmentRoutes = require("./routes/assignment.routes");
-const aboutyouRoutes = require("./routes/about_you.routes");
+// const aboutyouRoutes = require("./routes/about_you.routes");
 var FormData = require("form-data");
 var form = new FormData();
 var fs = require("fs");
@@ -127,6 +128,24 @@ app.get("/Explore-Programs", (req, res) => {
   res.render("Explore-Programs", { qs: req.query });
 });
 
+
+
+// app.put("/about_you", function (req, res) {
+//   axios
+//     .put(serverRoot + "/api/users/" + req.query.id, req.body{
+//       // name: req.body.name,
+//       // email: req.body.email,
+//       // parentPhoneNo: req.body.parentPhoneNo,
+//     })
+//     .then(function (response) {
+//       res.render("about_you");
+//       console.log(response);
+//     })
+//     .catch(function (error) {
+//       console.log(error);
+//     });
+// });
+
 app.get("/register", function (req, res) {
   if (req.cookies && req.cookies.token) {
     const token = req.cookies.token;
@@ -142,6 +161,7 @@ app.get("/register", function (req, res) {
     res.render("register", { qs: req.query, msg: "ok" });
   }
 });
+
 app.post("/register", function (req, res) {
   if (req.body && req.body.name) {
     axios
@@ -210,6 +230,7 @@ var LocalStorage = require("node-localstorage").LocalStorage;
 const { test } = require("./controllers/branch.controllers");
 const { count } = require("./models/user.models");
 var localStorage = new LocalStorage("./scratch");
+
 app.post("/login", function (req, res) {
   if (req.body && req.body.email && req.body.password) {
     axios
@@ -420,7 +441,44 @@ app.post("/student_announcement", function (req, res) {
 /* app.get('/dashboard',function(req,res){
         res.render('dashboard',{ username : username })
     })*/
+    // app.get("/update_user", function(req,res){
+      // axios.get(serverRoot+'/api/users', { params: { id: localStorage.getItem("userId") } })
+      // .then(function(userdata){
+      //   console.log(userdata);
+    //       // res.render("update_user", {
+    //       // user: userdata.data
+    //       // })
+    //   })
+    //   .catch(err =>{
+    //       res.send(err);
+    //   })
+    // })
+    app.get("/update_user", (req, res) => {
+      axios.get(serverRoot+'/api/users', { params: { id: req.query.id } })
+      .then(function(userdata){
+        //  console.log(userdata);
+      res.render("update_user", {
+        // user : userdata.data,
+        user_id: localStorage.getItem("userId"),
+        name: localStorage.getItem("name"),
+        parentPhoneNo: localStorage.getItem("parentPhoneNo"),
+        email: localStorage.getItem("userEmail"),
+      });
+    })
+  });
 app.get("/about_you", function (req, res) {
+
+
+  axios.get(serverRoot+'/api/users')
+  .then(function(response){
+    console.log(response.data);
+      //  res.render('about_you', { users : response.data });
+  })
+  .catch(err =>{
+      res.send(err);
+  });
+
+
   axios
     .get(
       serverRoot +
@@ -476,6 +534,7 @@ app.get("/about_you", function (req, res) {
           
               if (response.data.result > 0) {
                 res.render("about_you", {
+                  users : localStorage.getItem("response.data"),
                   user_id: localStorage.getItem("userId"),
                   branchData: response.data.result,
                   name: localStorage.getItem("name"),
@@ -1991,7 +2050,6 @@ app.use("/api", assignmentRoutes);
 app.use("/api", study_materialRoutes);
 app.use("/api", attendanceRoutes);
 app.use("/api", aboutyouRoutes);
-
 
 app.use("/", (req, res) => {
   // res
