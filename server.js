@@ -127,18 +127,6 @@ app.get("/Explore-Programs", (req, res) => {
   res.render("Explore-Programs", { qs: req.query });
 });
 
-<<<<<<< HEAD
-app.get("/update_user", (req, res) => {
-  res.render("update_user", {
-    user_id: localStorage.getItem("userId"),
-    name: localStorage.getItem("name"),
-    parentPhoneNo: localStorage.getItem("parentPhoneNo"),
-    email: localStorage.getItem("userEmail"),
-  });
-});
-=======
-
->>>>>>> 43cf175b3d71a10b96b76505dd91901b1b346027
 
 // app.put("/about_you", function (req, res) {
 //   axios
@@ -462,6 +450,7 @@ app.post("/student_announcement", function (req, res) {
     //   .catch(err =>{
     //       res.send(err);
     //   })
+    
     // })
     app.get("/update_user", (req, res) => {
       axios.get(serverRoot+'/api/users', { params: { id: req.query.id } })
