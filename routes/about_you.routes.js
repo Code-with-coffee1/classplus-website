@@ -1,6 +1,9 @@
-const express = require("express");
+
+const express = require('express');
 const router = express.Router();
-const { find, update } = require("../controllers/about_you.controllers");
+ const {find,update} = require('../controllers/about_you.controller');
+
+
 
 // route.get('/', (req,res)=>{
 
@@ -14,7 +17,9 @@ const { find, update } = require("../controllers/about_you.controllers");
 // });
 
 //api
-router.get("/users", find);
-router.put("/users/:id", update);
+router.get('/users', find);
+router.put('/users/:id',update);
 
-module.exports = router;
+
+
+module.exports=router;
