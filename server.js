@@ -127,6 +127,7 @@ app.get("/Explore-Programs", (req, res) => {
   res.render("Explore-Programs", { qs: req.query });
 });
 
+<<<<<<< HEAD
 app.get("/update_user", (req, res) => {
   res.render("update_user", {
     user_id: localStorage.getItem("userId"),
@@ -135,6 +136,9 @@ app.get("/update_user", (req, res) => {
     email: localStorage.getItem("userEmail"),
   });
 });
+=======
+
+>>>>>>> 43cf175b3d71a10b96b76505dd91901b1b346027
 
 // app.put("/about_you", function (req, res) {
 //   axios
@@ -447,7 +451,44 @@ app.post("/student_announcement", function (req, res) {
 /* app.get('/dashboard',function(req,res){
         res.render('dashboard',{ username : username })
     })*/
+    // app.get("/update_user", function(req,res){
+      // axios.get(serverRoot+'/api/users', { params: { id: localStorage.getItem("userId") } })
+      // .then(function(userdata){
+      //   console.log(userdata);
+    //       // res.render("update_user", {
+    //       // user: userdata.data
+    //       // })
+    //   })
+    //   .catch(err =>{
+    //       res.send(err);
+    //   })
+    // })
+    app.get("/update_user", (req, res) => {
+      axios.get(serverRoot+'/api/users', { params: { id: req.query.id } })
+      .then(function(userdata){
+        //  console.log(userdata);
+      res.render("update_user", {
+        // user : userdata.data,
+        user_id: localStorage.getItem("userId"),
+        name: localStorage.getItem("name"),
+        parentPhoneNo: localStorage.getItem("parentPhoneNo"),
+        email: localStorage.getItem("userEmail"),
+      });
+    })
+  });
 app.get("/about_you", function (req, res) {
+
+
+  axios.get(serverRoot+'/api/users')
+  .then(function(response){
+    console.log(response.data);
+      //  res.render('about_you', { users : response.data });
+  })
+  .catch(err =>{
+      res.send(err);
+  });
+
+
   axios
     .get(
       serverRoot +
@@ -471,6 +512,7 @@ app.get("/about_you", function (req, res) {
             .then(function (response) {
               if (response.data.result > 0) {
                 res.render("about_you", {
+                  users : localStorage.getItem("response.data"),
                   user_id: localStorage.getItem("userId"),
                   branchData: response.data.result,
                   name: localStorage.getItem("name"),
