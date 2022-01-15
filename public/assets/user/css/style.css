@@ -7703,9 +7703,9 @@ a:visited {
 }
 
 .blog-one__link {
-  font-size: 12px;
+  font-size: 20px;
 
-  color: #012237;
+  color: red;
 
   text-transform: uppercase;
 
