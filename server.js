@@ -457,22 +457,34 @@ app.post("/student_announcement", function (req, res) {
       axios.get(serverRoot+'/api/users', { params: { id: req.query.id } })
       .then(function(userdata){
         //  console.log(userdata);
+        // localStorage.removeItem('name');
+        localStorage.setItem("name", userdata.data.name);
+        localStorage.setItem("userEmail", userdata.data.email);
+        localStorage.setItem("parentPhoneNo", userdata.data.parentPhoneNo);
+        
+
       res.render("update_user", {
         // user : userdata.data,
+        
         user_id: localStorage.getItem("userId"),
         name: localStorage.getItem("name"),
         parentPhoneNo: localStorage.getItem("parentPhoneNo"),
         email: localStorage.getItem("userEmail"),
+        
       });
     })
   });
+  
 app.get("/about_you", function (req, res) {
-
-
   axios.get(serverRoot+'/api/users')
   .then(function(response){
     console.log(response.data);
       //  res.render('about_you', { users : response.data });
+      if(req.query && req.query.name) localStorage.setItem('name',req.query.name)
+      if(req.query && req.query.email)  localStorage.setItem('userEmail',req.query.email)
+      if(req.query && req.query.parentPhoneNo)  localStorage.setItem('parentPhoneNo',req.query.parentPhoneNo)
+
+
   })
   .catch(err =>{
       res.send(err);

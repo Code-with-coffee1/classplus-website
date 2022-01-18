@@ -132,11 +132,14 @@ var request = {
     "method" : "PUT",
     "data" : data
 }
+  
 
 $.ajax(request).done(function(response){
     alert("Data Updated Successfully!");
-    
+    // localStorage.setItem("name", response.data.user.name);
+    window.location.replace(`/about_you?name=${data.name}&email=${data.email}&parentPhoneNo=${data.parentPhoneNo}`)
 })
+
   })
     </script>
 
