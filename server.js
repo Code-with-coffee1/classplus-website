@@ -7,6 +7,7 @@ const mongoose = require("mongoose");
 const axios = require("axios");
 var Promise = require("promise");
 const path = require("path");
+var url = require("url");
 const upload = require("express-fileupload");
 require("dotenv").config();
 const branchRoutes = require("./routes/branch.routes");
@@ -126,7 +127,6 @@ app.get("/Explore-Experience", (req, res) => {
 app.get("/Explore-Programs", (req, res) => {
   res.render("Explore-Programs", { qs: req.query });
 });
-
 
 // app.put("/about_you", function (req, res) {
 //   axios
@@ -439,23 +439,25 @@ app.post("/student_announcement", function (req, res) {
 /* app.get('/dashboard',function(req,res){
         res.render('dashboard',{ username : username })
     })*/
-    // app.get("/update_user", function(req,res){
-      // axios.get(serverRoot+'/api/users', { params: { id: localStorage.getItem("userId") } })
-      // .then(function(userdata){
-      //   console.log(userdata);
-    //       // res.render("update_user", {
-    //       // user: userdata.data
-    //       // })
-    //   })
-    //   .catch(err =>{
-    //       res.send(err);
-    //   })
-    
-    // })
-    app.get("/update_user", (req, res) => {
-      axios.get(serverRoot+'/api/users', { params: { id: req.query.id } })
-      .then(function(userdata){
-        //  console.log(userdata);
+// app.get("/update_user", function(req,res){
+// axios.get(serverRoot+'/api/users', { params: { id: localStorage.getItem("userId") } })
+// .then(function(userdata){
+//   console.log(userdata);
+//       // res.render("update_user", {
+//       // user: userdata.data
+//       // })
+//   })
+//   .catch(err =>{
+//       res.send(err);
+//   })
+
+// })
+app.get("/update_user", (req, res) => {
+  axios
+    .get(serverRoot + "/api/users", { params: { id: req.query.id } })
+    .then(function (userdata) {
+      //  console.log(userdata);
+
       res.render("update_user", {
         // user : userdata.data,
         user_id: localStorage.getItem("userId"),
@@ -463,20 +465,42 @@ app.post("/student_announcement", function (req, res) {
         parentPhoneNo: localStorage.getItem("parentPhoneNo"),
         email: localStorage.getItem("userEmail"),
       });
-    })
-  });
+    });
+});
+
 app.get("/about_you", function (req, res) {
+  // console.log(req.query);
+  // let { name, email, parentPhoneNo } = req.query;
 
+  // if (req.query) {
 
-  axios.get(serverRoot+'/api/users')
-  .then(function(response){
-    console.log(response.data);
+  // if (req.query.updated === "yes") {
+  if (req.query && req.query.name) localStorage.setItem("name", req.query.name);
+  if (req.query && req.query.email)
+    localStorage.setItem("userEmail", req.query.email);
+  if (req.query && req.query.parentPhoneNo)
+    localStorage.setItem("parentPhoneNo", req.query.parentPhoneNo);
+  // localStorage.setItem("email", req.query.email);
+  // localStorage.setItem("parentPhoneNo", req.query.parentPhoneNo);
+  // }
+
+  // if (req.query.name) {
+  // } else null;
+  // if (req.query.email) {
+  // } else null;
+  // if (req.query.parentPhoneNo) {
+  // } else null;
+  // }
+
+  axios
+    .get(serverRoot + "/api/users")
+    .then(function (response) {
+      console.log(response.data);
       //  res.render('about_you', { users : response.data });
-  })
-  .catch(err =>{
+    })
+    .catch((err) => {
       res.send(err);
-  });
-
+    });
 
   axios
     .get(
@@ -501,7 +525,7 @@ app.get("/about_you", function (req, res) {
             .then(function (response) {
               if (response.data.result > 0) {
                 res.render("about_you", {
-                  users : localStorage.getItem("response.data"),
+                  users: localStorage.getItem("response.data"),
                   user_id: localStorage.getItem("userId"),
                   branchData: response.data.result,
                   name: localStorage.getItem("name"),
